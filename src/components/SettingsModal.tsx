@@ -58,9 +58,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        className="relative w-full max-w-xl glass-card p-10 border-[var(--glass-border)] shadow-2xl bg-[var(--panel-bg)]/80"
+                        className="relative w-full max-w-xl glass-card p-6 md:p-10 border-[var(--glass-border)] shadow-2xl bg-[var(--panel-bg)]/80"
                     >
-                        <div className="flex justify-between items-center mb-10">
+                        <div className="flex justify-between items-center mb-6 md:mb-10">
                             <div className="flex items-center gap-4">
                                 <div className="p-3 bg-blue-500/10 rounded-2xl border border-blue-500/20">
                                     <ShieldCheck className="text-blue-400" size={28} />
@@ -145,7 +145,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
                         <button
                             onClick={handleSave}
-                            className="w-full mt-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(37,99,235,0.3)] transition-all active:scale-[0.98]"
+                            className="w-full mt-6 md:mt-10 py-5 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-black text-sm uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 hover:shadow-[0_0_30px_rgba(37,99,235,0.3)] transition-all active:scale-[0.98]"
                         >
                             <Save size={20} /> Deploy Mnemonic Node
                         </button>

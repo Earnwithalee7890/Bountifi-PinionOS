@@ -32,7 +32,9 @@ import {
   Network,
   Sun,
   Moon,
-  Monitor
+  Monitor,
+  Menu,
+  X as CloseIcon
 } from 'lucide-react';
 import { bountifi, BountyTask } from '@/lib/agent';
 import { isPinionConfigured } from '@/lib/pinion';
@@ -143,6 +145,7 @@ export default function BountiFiDashboard() {
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
   const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'solar'>('emerald');
   const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogoClick = () => {
     setActiveTab('missions');
@@ -211,13 +214,21 @@ export default function BountiFiDashboard() {
               <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-[0.2em] leading-none uppercase">ULTRA v0.8</span>
             </div>
             <p className="text-zinc-500 text-[10px] font-black tracking-[0.3em] uppercase mt-1 opacity-60 flex items-center gap-2">
-              <Activity size={10} className="text-emerald-500" /> Neural Labor Network
+              <Activity size={10} className="text-emerald-500" /> <span className="hidden sm:inline">Neural Labor Network</span>
             </p>
           </div>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex bg-[var(--panel-bg)] rounded-2xl p-1 border border-[var(--glass-border)] hidden md:flex">
+        {/* Hamburger Menu - Mobile Only */}
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="xl:hidden p-4 glass-card border-[var(--glass-border)] text-[var(--foreground)]"
+        >
+          {isMenuOpen ? <CloseIcon size={24} /> : <Menu size={24} />}
+        </button>
+
+        {/* Tab Navigation - Desktop Only */}
+        <div className="flex bg-[var(--panel-bg)] rounded-2xl p-1 border border-[var(--glass-border)] hidden xl:flex">
           {[
             { id: 'missions', label: 'Mission Control', icon: Zap },
             { id: 'analytics', label: 'Earning Analytics', icon: TrendingUp },
@@ -297,6 +308,85 @@ export default function BountiFiDashboard() {
             {isRunning ? 'DEACTIVATE_NODE' : 'INITIALIZE_NEURAL_CORE'}
           </button>
         </div>
+
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="xl:hidden w-full overflow-hidden flex flex-col gap-6 mt-8 py-8 border-t border-[var(--glass-border)]"
+            >
+              <div className="flex flex-col gap-3">
+                {[
+                  { id: 'missions', label: 'Mission Control', icon: Zap },
+                  { id: 'analytics', label: 'Earning Analytics', icon: TrendingUp },
+                  { id: 'leaderboard', label: 'Global Rank', icon: Globe }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      setActiveTab(tab.id as any);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`flex items-center gap-4 px-8 py-5 rounded-2xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === tab.id
+                      ? 'bg-[var(--primary)] text-white'
+                      : 'text-zinc-500 bg-[var(--panel-bg)]'
+                      }`}
+                  >
+                    <tab.icon size={20} />
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest px-4">Mode</p>
+                  <div className="flex bg-[var(--panel-bg)] rounded-xl p-1 border border-[var(--glass-border)] justify-between">
+                    {[
+                      { id: 'dark', icon: Moon },
+                      { id: 'light', icon: Sun },
+                      { id: 'slate', icon: Monitor }
+                    ].map((m) => (
+                      <button
+                        key={m.id}
+                        onClick={() => setMode(m.id as any)}
+                        className={`p-3 rounded-lg border flex items-center justify-center transition-all ${mode === m.id ? 'border-[var(--primary)] bg-[var(--primary)]/10 text-[var(--primary)]' : 'border-transparent opacity-40'}`}
+                      >
+                        <m.icon size={16} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest px-4">Theme</p>
+                  <div className="flex bg-[var(--panel-bg)] rounded-xl p-1 border border-[var(--glass-border)] justify-between">
+                    {['emerald', 'amethyst', 'solar'].map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setTheme(t as any)}
+                        className={`p-3 rounded-lg border flex items-center justify-center transition-all ${theme === t ? 'border-[var(--primary)] text-[var(--primary)]' : 'border-transparent opacity-40'}`}
+                      >
+                        <div className={`w-3 h-3 rounded-full ${t === 'emerald' ? 'bg-[#10b981]' : t === 'amethyst' ? 'bg-[#a855f7]' : 'bg-[#f59e0b]'}`} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => {
+                  handleConnectWallet();
+                  setIsMenuOpen(false);
+                }}
+                className={`w-full py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] ${externalWallet ? 'bg-emerald-600/10 text-emerald-400' : 'bg-white text-black'}`}
+              >
+                {externalWallet ? 'WALLET_SYNCED' : 'CONNECT_TERMINAL'}
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
 
       <main className="max-w-[1800px] mx-auto relative z-10">
@@ -307,7 +397,7 @@ export default function BountiFiDashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="grid grid-cols-1 xl:grid-cols-4 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8"
             >
               {/* Left Column: Wallet & Reputation */}
               <div className="space-y-8">
@@ -399,14 +489,14 @@ export default function BountiFiDashboard() {
 
               {/* Center: Mission Control */}
               <div className="xl:col-span-2 space-y-8">
-                <section className="glass-card p-8 relative overflow-hidden flex flex-col min-h-[720px] bg-[var(--panel-bg)] border-[var(--glass-border)]">
+                <section className="glass-card p-6 md:p-8 relative overflow-hidden flex flex-col min-h-[500px] md:min-h-[720px] bg-[var(--panel-bg)] border-[var(--glass-border)]">
                   <div className="scan-line" />
-                  <div className="flex items-center justify-between mb-10 pb-6 border-b border-white/5 relative z-10">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 pb-6 border-b border-white/5 relative z-10 gap-4">
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-[var(--primary)]/10 rounded-xl">
-                        <Search size={24} className="text-[var(--primary)]" />
+                        <Search size={20} className="text-[var(--primary)]" />
                       </div>
-                      <h2 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Neural Mission Hub</h2>
+                      <h2 className="text-xl md:text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Neural Mission Hub</h2>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="flex items-center gap-2 text-[10px] font-black text-green-500 uppercase tracking-widest bg-green-500/5 border border-green-500/20 px-5 py-2 rounded-xl">
@@ -435,22 +525,22 @@ export default function BountiFiDashboard() {
                             key={task.id}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="p-8 glass-card border-[var(--glass-border)] hover:border-[var(--primary)]/20 transition-all group relative overflow-hidden bg-[var(--background)]/20 hover:bg-[var(--primary)]/5"
+                            className="p-6 md:p-8 glass-card border-[var(--glass-border)] hover:border-[var(--primary)]/20 transition-all group relative overflow-hidden bg-[var(--background)]/20 hover:bg-[var(--primary)]/5"
                           >
-                            <div className="flex justify-between items-start relative z-10">
-                              <div className="flex-1">
+                            <div className="flex flex-col sm:flex-row justify-between items-start relative z-10 gap-6">
+                              <div className="flex-1 w-full">
                                 <div className="flex items-center gap-3 mb-4">
                                   <div className="p-2 bg-white/5 rounded-lg group-hover:bg-blue-600/10 transition-colors">
-                                    <Github size={18} className="text-zinc-500 group-hover:text-blue-400 transition-colors" />
+                                    <Github size={16} className="text-zinc-500 group-hover:text-blue-400 transition-colors" />
                                   </div>
-                                  <span className="text-[10px] text-zinc-500 font-black font-mono uppercase tracking-[0.3em]">{task.repository}</span>
+                                  <span className="text-[9px] text-zinc-500 font-black font-mono uppercase tracking-[0.3em]">{task.repository}</span>
                                 </div>
-                                <h3 className="text-3xl font-black group-hover:text-white transition-colors tracking-tighter text-zinc-200 leading-tight pr-10">
+                                <h3 className="text-xl md:text-3xl font-black group-hover:text-white transition-colors tracking-tighter text-zinc-200 leading-tight pr-0 md:pr-10">
                                   {task.title}
                                 </h3>
                               </div>
-                              <div className="text-right ml-6">
-                                <p className="text-4xl font-black text-white italic tracking-tighter bg-gradient-to-br from-white to-zinc-600 bg-clip-text text-transparent">{task.reward}</p>
+                              <div className="text-left sm:text-right w-full sm:w-auto">
+                                <p className="text-3xl md:text-4xl font-black text-white italic tracking-tighter bg-gradient-to-br from-white to-zinc-600 bg-clip-text text-transparent">{task.reward}</p>
                                 <span className={`mt-3 inline-block text-[9px] font-black px-5 py-1.5 rounded-full border uppercase tracking-[0.2em] backdrop-blur-md ${task.status === 'paid' ? 'bg-green-500/10 text-green-400 border-green-500/20' :
                                   task.status === 'solving' ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse' :
                                     task.status === 'simulating' ? 'bg-purple-500/10 text-purple-400 border-purple-500/20 animate-pulse' :
@@ -688,46 +778,50 @@ export default function BountiFiDashboard() {
             >
               <div className="text-center mb-16">
                 <Globe size={64} className="text-[var(--primary)] opacity-40 mx-auto mb-8 animate-pulse" />
-                <h2 className="text-6xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-[var(--foreground)] to-zinc-600 bg-clip-text text-transparent">Global Rankings</h2>
-                <p className="text-xs font-black text-[var(--foreground)] opacity-40 tracking-[0.4em] uppercase mt-4">Autonomous Labor Authority (ALA) Verification</p>
+                <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-[var(--foreground)] to-zinc-600 bg-clip-text text-transparent px-4">Global Rankings</h2>
+                <p className="text-[10px] font-black text-[var(--foreground)] opacity-40 tracking-[0.4em] uppercase mt-4 px-6">Autonomous Labor Authority (ALA) Verification</p>
               </div>
 
               <div className="glass-card overflow-hidden bg-[var(--panel-bg)]">
-                <div className="grid grid-cols-4 p-8 border-b border-[var(--glass-border)] text-[10px] font-black uppercase tracking-widest text-[var(--foreground)] opacity-50">
-                  <span className="col-span-2">Agent ID / Designation</span>
-                  <span className="text-center">Missions Solved</span>
-                  <span className="text-right">Reputation Score</span>
-                </div>
-                <div className="divide-y divide-white/5">
-                  {(leaderboard || []).map((entry, idx) => (
-                    <motion.div
-                      key={entry.name}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      className={`grid grid-cols-4 p-8 items-center group hover:bg-white/[0.02] transition-colors ${entry.name.includes('v0.5') ? 'bg-blue-600/5' : ''}`}
-                    >
-                      <div className="flex items-center gap-6 col-span-2">
-                        <span className="text-2xl font-black italic text-zinc-800 tabular-nums w-8">0{idx + 1}</span>
-                        <div>
-                          <p className={`text-xl font-black tracking-tighter ${entry.name.includes('v0.5') ? 'text-blue-400' : 'text-zinc-200'}`}>{entry.name}</p>
-                          <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest leading-none">Status: {idx === 0 ? 'Supreme_Elite' : 'Verified_Node'}</span>
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <span className="text-xl font-black text-[var(--foreground)] tabular-nums tracking-tighter">{entry.solved}</span>
-                        <span className="block text-[8px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest mt-1">Confirmed</span>
-                      </div>
-                      <div className="text-right flex flex-col items-end">
-                        <span className={`text-2xl font-black italic tracking-tighter ${idx === 0 ? 'text-[var(--primary)]' : 'text-[var(--foreground)]'}`}>{entry.score}</span>
-                        <div className="flex gap-1 mt-2">
-                          {[1, 2, 3, 4, 5].map((s) => (
-                            <div key={s} className={`w-3 h-0.5 rounded-full ${s <= (5 - idx) ? 'bg-[var(--primary)]' : 'bg-[var(--foreground)]/5'}`} />
-                          ))}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                <div className="overflow-x-auto scrollbar-hide">
+                  <div className="min-w-[800px]">
+                    <div className="grid grid-cols-4 p-8 border-b border-[var(--glass-border)] text-[10px] font-black uppercase tracking-widest text-[var(--foreground)] opacity-50">
+                      <span className="col-span-2">Agent ID / Designation</span>
+                      <span className="text-center">Missions Solved</span>
+                      <span className="text-right">Reputation Score</span>
+                    </div>
+                    <div className="divide-y divide-white/5">
+                      {(leaderboard || []).map((entry, idx) => (
+                        <motion.div
+                          key={entry.name}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          className={`grid grid-cols-4 p-8 items-center group hover:bg-white/[0.02] transition-colors ${entry.name.includes('v0.5') ? 'bg-blue-600/5' : ''}`}
+                        >
+                          <div className="flex items-center gap-6 col-span-2">
+                            <span className="text-2xl font-black italic text-zinc-800 tabular-nums w-8">0{idx + 1}</span>
+                            <div>
+                              <p className={`text-xl font-black tracking-tighter ${entry.name.includes('v0.5') ? 'text-blue-400' : 'text-zinc-200'}`}>{entry.name}</p>
+                              <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest leading-none">Status: {idx === 0 ? 'Supreme_Elite' : 'Verified_Node'}</span>
+                            </div>
+                          </div>
+                          <div className="text-center">
+                            <span className="text-xl font-black text-[var(--foreground)] tabular-nums tracking-tighter">{entry.solved}</span>
+                            <span className="block text-[8px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest mt-1">Confirmed</span>
+                          </div>
+                          <div className="text-right flex flex-col items-end">
+                            <span className={`text-2xl font-black italic tracking-tighter ${idx === 0 ? 'text-[var(--primary)]' : 'text-[var(--foreground)]'}`}>{entry.score}</span>
+                            <div className="flex gap-1 mt-2">
+                              {[1, 2, 3, 4, 5].map((s) => (
+                                <div key={s} className={`w-3 h-0.5 rounded-full ${s <= (5 - idx) ? 'bg-[var(--primary)]' : 'bg-[var(--foreground)]/5'}`} />
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
               <p className="text-center mt-10 text-zinc-700 text-[10px] font-black uppercase tracking-[0.2em]">
@@ -784,7 +878,7 @@ export default function BountiFiDashboard() {
             <span className="text-4xl font-black italic tracking-tighter text-[var(--foreground)] uppercase bg-gradient-to-r from-emerald-400 to-amber-500 bg-clip-text text-transparent">BountiFi Protocol</span>
           </motion.div>
 
-          <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 text-[11px] font-black uppercase tracking-[0.4em] text-[var(--foreground)] opacity-40">
+          <div className="flex flex-wrap justify-center gap-x-8 md:gap-x-16 gap-y-8 text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[var(--foreground)] opacity-40">
             {['Architecture', 'Simulation_Engine', 'Reputation_Oracle', 'Privacy_Policy', 'Autonomous_Terms'].map((item) => (
               <span
                 key={item}
