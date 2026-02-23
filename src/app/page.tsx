@@ -100,19 +100,19 @@ const DocModal = ({ isOpen, type, onClose }: { isOpen: boolean, type: string | n
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-md"
+      className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[var(--background)]/80 backdrop-blur-md"
       onClick={onClose}
     >
       <motion.div
         initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
-        className="glass-card max-w-2xl w-full p-10 bg-[#050a08] border-emerald-500/20 shadow-[0_0_100px_rgba(16,185,129,0.1)]"
+        className="glass-card max-w-2xl w-full p-10 bg-[var(--panel-bg)] border-[var(--primary)]/20 shadow-[0_0_100px_var(--primary-glow)]"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-4 bg-emerald-500/10 rounded-2xl">
-            <doc.icon size={32} className="text-emerald-500" />
+          <div className="p-4 bg-[var(--primary)]/10 rounded-2xl">
+            <doc.icon size={32} className="text-[var(--primary)]" />
           </div>
-          <h2 className="text-3xl font-black italic uppercase tracking-tighter text-white">{doc.title}</h2>
+          <h2 className="text-3xl font-black italic uppercase tracking-tighter text-[var(--foreground)]">{doc.title}</h2>
         </div>
         <p className="text-zinc-400 text-lg leading-relaxed mb-10 font-medium">
           {doc.content}
@@ -143,14 +143,6 @@ export default function BountiFiDashboard() {
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
   const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'solar'>('emerald');
   const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
-
-  useEffect(() => {
-    document.body.setAttribute('data-theme', theme);
-  }, [theme]);
-
-  useEffect(() => {
-    document.body.setAttribute('data-mode', mode);
-  }, [mode]);
 
   const handleLogoClick = () => {
     setActiveTab('missions');
@@ -193,7 +185,12 @@ export default function BountiFiDashboard() {
   };
 
   return (
-    <div className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-[var(--background)] text-[var(--foreground)] selection:bg-primary/30 transition-colors duration-500 font-outfit">
+    <div
+      id="bountifi-root"
+      data-theme={theme}
+      data-mode={mode}
+      className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-[var(--background)] text-[var(--foreground)] selection:bg-primary/30 transition-colors duration-500 font-outfit"
+    >
       <div className="mesh-bg" />
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <DocModal isOpen={!!docModal} type={docModal} onClose={() => setDocModal(null)} />

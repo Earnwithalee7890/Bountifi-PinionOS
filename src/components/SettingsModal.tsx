@@ -51,14 +51,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="absolute inset-0 bg-black/90 backdrop-blur-md"
+                        className="absolute inset-0 bg-[var(--background)]/90 backdrop-blur-md"
                     />
 
                     <motion.div
                         initial={{ scale: 0.9, opacity: 0, y: 20 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        className="relative w-full max-w-xl glass-card p-10 border-white/10 shadow-2xl bg-[#0a0a0a]/80"
+                        className="relative w-full max-w-xl glass-card p-10 border-[var(--glass-border)] shadow-2xl bg-[var(--panel-bg)]/80"
                     >
                         <div className="flex justify-between items-center mb-10">
                             <div className="flex items-center gap-4">
@@ -66,20 +66,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                                     <ShieldCheck className="text-blue-400" size={28} />
                                 </div>
                                 <div>
-                                    <h2 className="text-2xl font-black italic tracking-tight uppercase">Agent Security</h2>
-                                    <p className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest">v0.3 Secure Configuration</p>
+                                    <h2 className="text-2xl font-black italic tracking-tight uppercase text-[var(--foreground)]">Agent Security</h2>
+                                    <p className="text-[var(--foreground)] opacity-40 text-[10px] uppercase font-bold tracking-widest">v0.3 Secure Configuration</p>
                                 </div>
                             </div>
-                            <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors text-zinc-500">
+                            <button onClick={onClose} className="p-2 hover:bg-[var(--foreground)]/5 rounded-full transition-colors text-[var(--foreground)] opacity-40">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <div className="space-y-8">
                             {/* Mnemonic Section */}
-                            <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                            <div className="p-6 rounded-2xl bg-[var(--background)]/20 border border-[var(--glass-border)]">
                                 <div className="flex justify-between items-center mb-4">
-                                    <label className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">
+                                    <label className="flex items-center gap-2 text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-[0.2em]">
                                         <Key size={14} className="text-blue-400" /> 12-Word Seed Phrase
                                     </label>
                                     <button
@@ -92,7 +92,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
 
                                 {keys.mnemonic ? (
                                     <div className="relative group">
-                                        <div className="bg-black/60 border border-white/10 rounded-xl p-4 font-mono text-sm leading-relaxed text-zinc-300 min-h-[80px] break-words">
+                                        <div className="bg-[var(--background)]/60 border border-[var(--glass-border)] rounded-xl p-4 font-mono text-sm leading-relaxed text-[var(--foreground)] opacity-80 min-h-[80px] break-words">
                                             {keys.mnemonic}
                                         </div>
                                         <button
@@ -117,7 +117,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                             {/* API Section */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase mb-2 tracking-widest">
+                                    <label className="flex items-center gap-2 text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase mb-2 tracking-widest">
                                         <Github size={14} /> GitHub Token
                                     </label>
                                     <input
@@ -125,11 +125,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                                         value={keys.githubToken}
                                         onChange={(e) => setKeys({ ...keys, githubToken: e.target.value })}
                                         placeholder="ghp_..."
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition-all font-mono text-white"
+                                        className="w-full bg-[var(--background)]/20 border border-[var(--glass-border)] rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition-all font-mono text-[var(--foreground)]"
                                     />
                                 </div>
                                 <div>
-                                    <label className="flex items-center gap-2 text-[10px] font-black text-zinc-400 uppercase mb-2 tracking-widest">
+                                    <label className="flex items-center gap-2 text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase mb-2 tracking-widest">
                                         <Cpu size={14} /> Anthropic Key
                                     </label>
                                     <input
@@ -137,7 +137,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                                         value={keys.anthropicKey}
                                         onChange={(e) => setKeys({ ...keys, anthropicKey: e.target.value })}
                                         placeholder="sk-ant-..."
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition-all font-mono text-white"
+                                        className="w-full bg-[var(--background)]/20 border border-[var(--glass-border)] rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition-all font-mono text-[var(--foreground)]"
                                     />
                                 </div>
                             </div>
