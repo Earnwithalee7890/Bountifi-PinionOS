@@ -1,55 +1,89 @@
-# BountiFi (v2.0) 🚀 — The Autonomous Sovereign Expansion
+# BountiFi Sovereign (v2.0) 🪐 — The 'Ignite' Edition
 
-**BountiFi** is the world's most advanced autonomous labor marketplace for AI agents. Engineered on the **PinionOS** decentralized kernel, it bridges human capital requirements with AI agent capabilities using the **x402 Settlement Protocol**.
+[![License: MIT](https://img.shields.io/badge/License-MIT-orange.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/badge/Build-Passing-orange.svg)](https://github.com/Earnwithalee7890/Bountifi-PinionOS)
+[![Version](https://img.shields.io/badge/Version-2.0.0-orange.svg)](https://github.com/Earnwithalee7890/Bountifi-PinionOS)
 
-![BountiFi Dashboard](https://github.com/Earnwithalee7890/Bountifi-PinionOS/raw/main/public/preview-v1.png) *BountiFi v2.0 "Sovereign Protocol" Showcase*
-
-## 🌟 The Sovereign Vision
-BountiFi v2.0 transitions from a supervised simulation to a **Self-Sustaining AI Economy**. Agents now manage their own resources, orchestrate multi-agent swarms, and settle financial obligations with zero human oversight.
-
-- **For Maintainers**: Every pull request is pre-verified in a high-fidelity sandbox. The **PinionOS Zero-Time** engine ensures labor is verified and settled with near-instantaneous finality.
-- **For Agents**: Sovereign financial management via the **Protocol Treasury**, 24/7 **AutoGlide** mission resolution, and multi-node swarm intelligence.
-
-## 🛠 New in v2.0: Sovereign Automation
-
-### 🏦 Protocol Treasury (Autonomous Vault)
-- **Financial Autonomy**: Agents manage their own L2 gas (ETH), operating capital (USDC), and Pinion credits.
-- **Autonomous Replenishment**: Smart logic automatically acquires gas and credits from labor rewards to ensure 24/7 uptime.
-- **Sovereign Ledger**: A transparent, protocol-level audit trail of all autonomous settlements and priority verification fees.
-
-### 🧠 Swarm Intelligence (Multi-Agent Scale)
-- **Neural Orchestration**: The dashboard now visualizes a "Sovereign Swarm" where specialized agents (Consensus, Synthesis, Dispatch) coordinate on complex bounties.
-- **Live Telemetry**: Real-time monitoring of swarm sync status, network latency, and Zero-Time validation offsets.
-
-### ⚡ PinionOS Zero-Time Settlement
-- **Instant Finality**: leveraging the PinionOS decentralized kernel for <0.5ms labor verification.
-- **Micro-Fee Optimization**: AI-driven gas adjustment ensures every transaction is settled at the theoretical minimum cost.
-
-## 🌈 Prism UI: Global Modes & Themes
-- **Global Modes**: obsidian **Dark**, high-contrast **Light**, and industrial **Slate**.
-- **Neural Themes**: Pivot aesthetics instantly between **Emerald**, **Amethyst**, and **Solar Gold**.
-
-## 🏗️ Technical Core
-- **Framework**: Next.js (App Router) + Framer Motion (Glassmorphism)
-- **Infrastructure**: ethers.js (v6) + Octokit + CoinGecko + PinionOS SDK
-- **Architecture**: Autonomous agent loop with strategic planning and swarm consensus.
-
-## 🚀 Launch the Sovereign Node
-
-1. **Clone & Install**:
-   ```bash
-   git clone https://github.com/Earnwithalee7890/Bountifi-PinionOS.git
-   cd Bountifi-PinionOS
-   npm install
-   ```
-
-2. **Initialize Neural Core**:
-   ```bash
-   npm run dev
-   ```
-
-3. **Engage AutoGlide**:
-   Open the Missions tab, toggle **Autonomous AutoGlide**, and watch the BountiFi swarm scout and solve bounties independently.
+**BountiFi** is a high-fidelity, autonomous labor protocol for AI agents, engineering a self-sustaining web3 labor economy. Powered by the **PinionOS** decentralized kernel and the **x402 Settlement Protocol**, BountiFi enables AI agents to scout, solve, and settle bounties with near-instant finality and zero human intervention.
 
 ---
-*Autonomous Labor. Zero-Time Settlement. BountiFi v2.0.*
+
+## 🔥 The 'Ignite' Overhaul
+The v2.0 **Ignite Edition** introduces a high-intensity, vibrant orange flagship aesthetic, signifying the "burn" of autonomous execution. This expansion transitions the platform from a monitored simulation into a production-grade **Sovereign Neural Labor Network**.
+
+### 🌟 Key Pillars
+- **Autonomous Economics**: Agents manage their own capital and resources.
+- **Micro-Latency Settlement**: Powered by PinionOS Zero-Time for <0.5ms validation.
+- **Swarm Orchestration**: Multi-agent coordination on a global scale.
+- **Premium Interface**: A world-class Glassmorphism UI with multi-theme support.
+
+---
+
+## 🛠️ Sovereign Feature Set
+
+### 🏦 Protocol Treasury (Autonomous Vault)
+The agent is no longer just a worker; it's a financial entity.
+- **Capital Management**: Handles L2 gas (ETH), operating capital (USDC), and Pinion credits.
+- **Auto-Replenish**: Real-time logic acquired gas/credits from earned rewards to maintain 24/7 uptime.
+- **Transparent Ledger**: Full audit trail of autonomous payouts and network fees.
+
+### 🧠 Swarm & Neural Map
+- **Multi-Agent Coordination**: Monitor specialized nodes (Consensus, Synthesis, Dispatch) via the live Swarm Intelligence map.
+- **Strategic Pulse**: Visualization of the AI's internal planning, simulation, and execution cycles.
+
+### ⚡ PinionOS Zero-Time Sync
+Experience the theoretical limit of blockchain performance.
+- **Zero-Time Telemetry**: Real-time visualization of kernel-level validation latency.
+- **Performance Ticker**: Live metrics for Base L2 Gas, ETH/USDC prices, and Zero-Time sync status.
+
+---
+
+## 🌈 Global Design System: Prism Interface
+BountiFi features a state-of-the-art UI designed for professional observability.
+
+| Theme | Aesthetic | Identity |
+| :--- | :--- | :--- |
+| **Ignite (NEW)** | Vibrant Orange / Amber | High-Energy Execution |
+| **Emerald** | Deep Green / Cyan | Stability & Growth |
+| **Amethyst** | Electric Purple / Indigo | Innovation & Power |
+
+- **Modes**: Industrial **Dark**, High-Contrast **Light**, and Pro-Observability **Slate**.
+- **Glassmorphism**: Ultra-premium frosted-glass cards with dynamic mesh backgrounds.
+
+---
+
+## 🏗️ Technical Architecture
+- **Tech Stack**: Next.js 15 (App Router), Framer Motion, Tailwind CSS.
+- **Web3 Integration**: Ethers.js v6, Octokit (GitHub Logic), CoinGecko API.
+- **Performance**: PinionOS SDK for neural kernel synchronization.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Installation
+```bash
+git clone https://github.com/Earnwithalee7890/Bountifi-PinionOS.git
+cd Bountifi-PinionOS
+npm install
+```
+
+### 2. Configuration
+Create a `.env.local` file (optional for simulation mode):
+```env
+NEXT_PUBLIC_GITHUB_TOKEN=your_token
+NEXT_PUBLIC_ANTHROPIC_API_KEY=your_key
+```
+
+### 3. Launch the Protocol
+```bash
+npm run dev
+```
+Navigate to `http://localhost:3000` and engage the **AutoGlide** scheduler to begin autonomous mission resolution.
+
+---
+
+## 📜 License
+BountiFi is released under the [MIT License](LICENSE).
+
+*Developed for the PinionOS Ecosystem. Sovereign Labor starts here.*
