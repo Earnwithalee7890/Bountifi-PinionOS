@@ -841,20 +841,19 @@ export default function BountiFiDashboard() {
                           initial={{ height: 0 }}
                           animate={{ height: `${val / 1.5}%` }}
                           transition={{ delay: i * 0.1, duration: 1 }}
-                          className="flex-1 bg-gradient-to-t from-blue-600/40 to-purple-600/60 rounded-t-xl relative group cursor-pointer"
+                          className="flex-1 bg-gradient-to-t from-orange-600/60 to-orange-400/80 rounded-t-xl relative group cursor-pointer shadow-[0_0_15px_rgba(249,115,22,0.2)]"
                         >
-                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-[var(--primary)] text-white px-2 py-1 rounded text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">
                             ${val}
+                          </div>
+                          {/* DYNAMIC EPOCH LABEL */}
+                          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[9px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest whitespace-nowrap">
+                            E_{String(i + 1).padStart(2, '0')}
                           </div>
                         </motion.div>
                       ))}
                     </div>
-                    <div className="flex justify-between mt-6 px-2 text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest">
-                      <span>Epoch_01</span>
-                      <span>Epoch_03</span>
-                      <span>Epoch_05</span>
-                      <span>Epoch_07</span>
-                    </div>
+                    {/* LEGACY LABELS REMOVED - NOW DYNAMIC ABOVE */}
                   </div>
                 </div>
               </section>

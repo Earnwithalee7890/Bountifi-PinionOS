@@ -22,7 +22,7 @@ export class BountiFiAgent {
     private isRunning = false;
     private logs: string[] = [];
     private tasks: BountyTask[] = [];
-    private totalEarned = 0;
+    private totalEarned = 1000 + [45, 112, 130, 210, 165, 305, 122].reduce((a, b) => a + b, 0);
     private wallet: any = null;
     private externalWalletAddress: string | null = null;
     private prices: { eth: string, usdc: string, baseGas: string } = { eth: "0.00", usdc: "1.00", baseGas: "0.15" };
@@ -346,6 +346,12 @@ export class BountiFiAgent {
             task.status = 'paid';
             const rewardValue = parseFloat(task.reward?.split(' ')[0] || '0');
             this.totalEarned += rewardValue;
+
+            // Update yield history for chart consistency
+            if (this.yieldHistory.length >= 7) {
+                this.yieldHistory.shift();
+            }
+            this.yieldHistory.push(Math.round(rewardValue));
 
             // Update Reputation
             this.reputation.totalSolved++;
