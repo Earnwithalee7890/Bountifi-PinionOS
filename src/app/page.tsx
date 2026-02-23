@@ -37,9 +37,14 @@ import {
   Menu,
   X as CloseIcon,
   ShieldAlert,
-  Target
+  Target,
+  Check,
+  Copy,
+  Rocket,
+  Brain,
+  ZapIcon
 } from 'lucide-react';
-import { bountifi, BountyTask } from '@/lib/agent';
+import { bountifi, BountyTask, Analytics, SubAgent, Reputation, SettlementTx, LeaderboardEntry } from '@/lib/agent';
 import { isPinionConfigured } from '@/lib/pinion';
 import { SettingsModal } from '@/components/SettingsModal';
 import { VaultComponent } from '@/components/VaultComponent';
@@ -138,20 +143,19 @@ export default function BountiFiDashboard() {
   const [activeTab, setActiveTab] = useState<'missions' | 'analytics' | 'leaderboard' | 'sovereign'>('missions');
   const [isRunning, setIsRunning] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
-  const [tasks, setTasks] = useState<BountyTask[]>([]);
-  const [balance, setBalance] = useState({ eth: "0.0042", usdc: "165.25" });
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [reputation, setReputation] = useState({ score: 0, successRate: 0, totalSolved: 0 });
+  const [prices, setPrices] = useState<{ eth: string, usdc: string, baseGas: string }>({ eth: "0.00", usdc: "1.00", baseGas: "0.15" });
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [reputation, setReputation] = useState<Reputation | null>(null);
   const [externalWallet, setExternalWallet] = useState<string | null>(null);
-  const [analytics, setAnalytics] = useState<any>(null);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<BountyTask[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [docModal, setDocModal] = useState<string | null>(null);
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
   const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'ignite'>('ignite');
   const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
   const [specialization, setSpecialization] = useState<'frontend' | 'solidity' | 'protocol' | 'rust'>('frontend');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [subAgents, setSubAgents] = useState<any[]>([]);
+  const [subAgents, setSubAgents] = useState<SubAgent[]>([]);
   const [autoPilot, setAutoPilot] = useState(false);
 
   const handleLogoClick = () => {
@@ -263,7 +267,7 @@ export default function BountiFiDashboard() {
           <button
             onClick={handleConnectWallet}
             className={`px-6 py-3 rounded-xl flex items-center gap-3 text-[10px] font-black uppercase tracking-widest transition-all ${externalWallet
-              ? 'bg-emerald-600/10 text-emerald-400 border border-emerald-500/30'
+              ? 'bg-orange-600/10 text-orange-400 border border-orange-500/30'
               : 'bg-white text-black hover:bg-zinc-200'
               }`}
           >
@@ -313,7 +317,7 @@ export default function BountiFiDashboard() {
             onClick={handleToggleAgent}
             className={`px-10 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all ${isRunning
               ? 'bg-red-500/10 text-red-500 border border-red-500/30 hover:bg-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.15)]'
-              : 'bg-gradient-to-r from-emerald-600 to-amber-600 text-white hover:opacity-90 shadow-lg'
+              : 'bg-gradient-to-r from-orange-600 to-amber-600 text-white hover:opacity-90 shadow-lg'
               }`}
           >
             {isRunning ? 'DEACTIVATE_NODE' : 'INITIALIZE_NEURAL_CORE'}
@@ -392,7 +396,7 @@ export default function BountiFiDashboard() {
                   handleConnectWallet();
                   setIsMenuOpen(false);
                 }}
-                className={`w-full py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] ${externalWallet ? 'bg-emerald-600/10 text-emerald-400' : 'bg-white text-black'}`}
+                className={`w-full py-6 rounded-2xl font-black text-xs uppercase tracking-[0.2em] ${externalWallet ? 'bg-orange-600/10 text-orange-400' : 'bg-white text-black'}`}
               >
                 {externalWallet ? 'WALLET_SYNCED' : 'CONNECT_TERMINAL'}
               </button>
@@ -426,7 +430,7 @@ export default function BountiFiDashboard() {
                       <p className="text-[10px] text-zinc-500 font-black mb-2 tracking-[0.2em] uppercase">Accumulated_Earn</p>
                       <div className="flex items-baseline gap-3">
                         <span className="text-5xl font-black tracking-tighter text-white tabular-nums">{(parseFloat(balance.usdc) * (analytics?.prices?.usdc || 1)).toFixed(2)}</span>
-                        <span className="text-xs font-bold text-emerald-400 uppercase italic">USDC</span>
+                        <span className="text-xs font-bold text-orange-400 uppercase italic">USDC</span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-6 bg-[var(--background)]/40 rounded-2xl p-4 border border-[var(--glass-border)]">
@@ -436,7 +440,7 @@ export default function BountiFiDashboard() {
                       </div>
                       <div className="text-right">
                         <p className="text-[9px] text-[var(--foreground)] opacity-40 font-bold mb-1 uppercase tracking-widest leading-none">Market_Val</p>
-                        <p className="text-lg font-black text-emerald-500 tabular-nums">${(parseFloat(balance.eth) * (analytics?.prices?.eth || 2800)).toFixed(0)}</p>
+                        <p className="text-lg font-black text-orange-500 tabular-nums">${(parseFloat(balance.eth) * (analytics?.prices?.eth || 2800)).toFixed(0)}</p>
                       </div>
                     </div>
                     <button className="premium-btn w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-400 flex items-center justify-center gap-2">
@@ -465,7 +469,7 @@ export default function BountiFiDashboard() {
                       </div>
                       <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
                         <motion.div
-                          className="h-full bg-gradient-to-r from-emerald-600 to-amber-600 rounded-full shadow-[0_0_100px_var(--primary)]"
+                          className="h-full bg-gradient-to-r from-orange-600 to-amber-600 rounded-full shadow-[0_0_100px_var(--primary)]"
                           initial={{ width: 0 }}
                           animate={{ width: `${reputation.successRate * 100}%` }}
                           transition={{ duration: 1.5, ease: "easeOut" }}
@@ -491,9 +495,9 @@ export default function BountiFiDashboard() {
                         <p className="text-xl font-black text-white">{analytics?.telemetry?.strategy || 98}%</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                      <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Autonomous_Optimization_Active</span>
+                    <div className="flex items-center gap-3 p-4 bg-orange-500/5 rounded-2xl border border-orange-500/10">
+                      <div className="w-2 h-2 rounded-full bg-orange-500 animate-ping" />
+                      <span className="text-[9px] font-black text-orange-400 uppercase tracking-widest">Autonomous_Optimization_Active</span>
                     </div>
                   </div>
                 </section>
@@ -540,7 +544,7 @@ export default function BountiFiDashboard() {
                                   transition={{ duration: 3, delay: i * 0.5, repeat: Infinity }}
                                   className="flex flex-col items-center gap-4"
                                 >
-                                  <div className={`p-4 rounded-2xl border ${agent.status === 'active' ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400' : 'bg-white/5 border-white/10 text-zinc-600'}`}>
+                                  <div className={`p-4 rounded-2xl border ${agent.status === 'active' ? 'bg-orange-500/10 border-orange-500/40 text-orange-400' : 'bg-white/5 border-white/10 text-zinc-600'}`}>
                                     <Cpu size={32} />
                                   </div>
                                   <span className="text-[8px] font-black uppercase tracking-widest">{agent.id}</span>
@@ -601,7 +605,7 @@ export default function BountiFiDashboard() {
                                   <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${task.confidence || 0}%` }}
-                                    className={`h-full rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(59,130,246,0.2)] ${(task.confidence || 0) > 90 ? 'bg-gradient-to-r from-emerald-500 to-green-500' :
+                                    className={`h-full rounded-full transition-all duration-700 shadow-[0_0_15px_rgba(59,130,246,0.2)] ${(task.confidence || 0) > 90 ? 'bg-gradient-to-r from-orange-500 to-amber-500' :
                                       (task.confidence || 0) > 85 ? 'bg-gradient-to-r from-blue-600 to-indigo-500' :
                                         'bg-gradient-to-r from-amber-600 to-orange-500'
                                       }`}
@@ -690,7 +694,7 @@ export default function BountiFiDashboard() {
                           key={depth}
                           onClick={() => setSimDepth(depth as any)}
                           className={`py-2 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all ${simDepth === depth
-                            ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400'
+                            ? 'bg-orange-500/20 border-orange-500/40 text-orange-400'
                             : 'bg-white/5 border-white/5 text-zinc-600 hover:text-zinc-400'
                             }`}
                         >
@@ -702,7 +706,7 @@ export default function BountiFiDashboard() {
                     <div className="mt-6 pt-6 border-t border-white/5">
                       <div className="flex items-center justify-between mb-4">
                         <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">Autonomous_AutoGlide</p>
-                        <div className={`w-8 h-4 rounded-full p-1 transition-colors cursor-pointer ${autoPilot ? 'bg-emerald-500' : 'bg-zinc-800'}`}
+                        <div className={`w-8 h-4 rounded-full p-1 transition-colors cursor-pointer ${autoPilot ? 'bg-orange-500' : 'bg-zinc-800'}`}
                           onClick={() => {
                             bountifi.setAutoPilot(!autoPilot);
                             setAutoPilot(!autoPilot);
@@ -814,11 +818,11 @@ export default function BountiFiDashboard() {
                       <History size={14} className="text-[var(--primary)]" /> Settlement History
                     </h3>
                     <div className="space-y-4">
-                      {analytics?.settlementHistory?.map((tx: any) => (
+                      {analytics?.settlementHistory?.map((tx: SettlementTx) => (
                         <div key={tx.id} className="p-5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between hover:bg-white/10 transition-colors">
                           <div className="flex items-center gap-4">
-                            <div className="p-2 bg-emerald-500/10 rounded-lg">
-                              <ShieldCheck size={16} className="text-emerald-500" />
+                            <div className="p-2 bg-orange-500/10 rounded-lg">
+                              <ShieldCheck size={16} className="text-orange-500" />
                             </div>
                             <div>
                               <p className="text-xs font-black text-white uppercase tracking-widest">{tx.type}</p>
@@ -925,7 +929,7 @@ export default function BountiFiDashboard() {
                       <span className="text-right">Reputation Score</span>
                     </div>
                     <div className="divide-y divide-white/5">
-                      {(leaderboard || []).map((entry, idx) => (
+                      {(leaderboard || []).map((entry: LeaderboardEntry, idx: number) => (
                         <motion.div
                           key={entry.name}
                           initial={{ opacity: 0, y: 10 }}
@@ -988,11 +992,11 @@ export default function BountiFiDashboard() {
                     </div>
                   </div>
                   <div className="space-y-4">
-                    {analytics?.settlementHistory?.slice(0, 5).map((tx: any) => (
+                    {analytics?.settlementHistory?.slice(0, 5).map((tx: SettlementTx) => (
                       <div key={tx.id} className="p-5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between hover:bg-white/10 transition-colors group">
                         <div className="flex items-center gap-4">
-                          <div className={`p-2 rounded-lg ${tx.amount?.startsWith('-') ? 'bg-blue-500/10' : 'bg-emerald-500/10'}`}>
-                            <TrendingUp size={16} className={tx.amount?.startsWith('-') ? 'text-blue-500' : 'text-emerald-500'} />
+                          <div className={`p-2 rounded-lg ${tx.amount?.startsWith('-') ? 'bg-blue-500/10' : 'bg-orange-500/10'}`}>
+                            <TrendingUp size={16} className={tx.amount?.startsWith('-') ? 'text-blue-500' : 'text-orange-500'} />
                           </div>
                           <div>
                             <p className="text-xs font-black text-white uppercase tracking-widest">{tx.type}</p>
@@ -1000,7 +1004,7 @@ export default function BountiFiDashboard() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className={`text-sm font-black italic ${tx.amount?.startsWith('-') ? 'text-zinc-400' : 'text-emerald-400'}`}>{tx.amount}</p>
+                          <p className={`text-sm font-black italic ${tx.amount?.startsWith('-') ? 'text-zinc-400' : 'text-orange-400'}`}>{tx.amount}</p>
                         </div>
                       </div>
                     ))}

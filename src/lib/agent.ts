@@ -1,6 +1,6 @@
 import { Octokit } from "octokit";
 import { pinion } from "./pinion";
-import { Wallet } from "ethers";
+import { Wallet, HDNodeWallet } from "ethers";
 
 export interface BountyTask {
     id: string;
@@ -18,12 +18,44 @@ export interface Reputation {
     totalSolved: number;
 }
 
+export interface SettlementTx {
+    id: string;
+    type: string;
+    time: string;
+    status: 'settled' | 'verified' | 'failed';
+    hash: string;
+    amount: string;
+}
+
+export interface Analytics {
+    totalEarned: number;
+    conversionRate: number;
+    uptime: string;
+    projections: string;
+    settlementHistory: SettlementTx[];
+    yieldHistory: number[];
+    prices: { eth: string; usdc: string; baseGas: string };
+    telemetry: { cpu: number; strategy: number; zeroTime: string };
+}
+
+export interface LeaderboardEntry {
+    name: string;
+    solved: number;
+    score: number;
+}
+
+export interface SubAgent {
+    id: string;
+    status: 'active' | 'idle' | 'busy';
+    task: string;
+}
+
 export class BountiFiAgent {
     private isRunning = false;
     private logs: string[] = [];
     private tasks: BountyTask[] = [];
     private totalEarned = 1000 + [45, 112, 130, 210, 165, 305, 122].reduce((a, b) => a + b, 0);
-    private wallet: any = null;
+    private wallet: HDNodeWallet | Wallet | null = null;
     private externalWalletAddress: string | null = null;
     private prices: { eth: string, usdc: string, baseGas: string } = { eth: "0.00", usdc: "1.00", baseGas: "0.15" };
     private telemetry: { cpu: number, strategy: number, zeroTime: string } = { cpu: 12, strategy: 98, zeroTime: "0.0ms" };
@@ -37,14 +69,14 @@ export class BountiFiAgent {
         pinionCredits: 2500,
         totalFeesPaid: 0
     };
-    private subAgents = [
+    private subAgents: SubAgent[] = [
         { id: 'Node-Alpha', status: 'active', task: 'Monitoring' },
         { id: 'Node-Beta', status: 'idle', task: 'Standby' },
         { id: 'Node-Gamma', status: 'active', task: 'Simulating' },
         { id: 'Node-Delta', status: 'idle', task: 'Standby' }
     ];
     private yieldHistory: number[] = [45, 112, 130, 210, 165, 305, 122];
-    private settlementHistory: any[] = [
+    private settlementHistory: SettlementTx[] = [
         { id: 'tx_9012', type: 'Sovereign_Tip', time: '10m ago', status: 'settled', hash: '0x3b...e12a', amount: '-2.00 USDC' },
         { id: 'tx_8271', type: 'Frontend_Fix', time: '2h ago', status: 'verified', hash: '0x82...f2ea', amount: '+145.00 USDC' },
         { id: 'tx_8269', type: 'Logic_Opt', time: '5h ago', status: 'verified', hash: '0x1a...d912', amount: '+85.00 USDC' },
@@ -64,7 +96,7 @@ export class BountiFiAgent {
                     const { mnemonic } = JSON.parse(saved);
                     if (mnemonic) {
                         this.wallet = Wallet.fromPhrase(mnemonic);
-                        this.addLog(`Wallet active: ${this.wallet.address.substring(0, 8)}...`);
+                        this.addLog(`Wallet active: ${this.wallet?.address.substring(0, 8)}...`);
                     }
                 }
             }
@@ -213,12 +245,12 @@ export class BountiFiAgent {
             const data = await response.json();
 
             if (data.items && data.items.length > 0) {
-                const newTasks: BountyTask[] = data.items.map((item: any) => ({
+                const newTasks: BountyTask[] = data.items.map((item: { number: number; title: string; html_url: string; repository_url: string }) => ({
                     id: item.number.toString(),
                     title: item.title,
                     url: item.html_url,
                     repository: item.repository_url.split('/').slice(-2).join('/'),
-                    status: 'pending',
+                    status: 'pending' as const,
                     reward: `${(Math.random() * 200 + 50).toFixed(0)} USDC` // Simulated reward as GitHub issues often don't have price in metadata
                 }));
 
