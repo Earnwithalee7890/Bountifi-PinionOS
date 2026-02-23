@@ -29,6 +29,13 @@ export class BountiFiAgent {
     private telemetry: { cpu: number, strategy: number } = { cpu: 12, strategy: 98 };
 
     private reputation: Reputation = { score: 750, successRate: 0.98, totalSolved: 42 };
+    private specialization: 'frontend' | 'solidity' | 'protocol' = 'frontend';
+    private yieldHistory: number[] = [12, 45, 32, 67, 89, 94, 112];
+    private settlementHistory: any[] = [
+        { id: 'tx_8271', type: 'Frontend_Fix', time: '2h ago', status: 'verified', hash: '0x82...f2ea' },
+        { id: 'tx_8269', type: 'Logic_Opt', time: '5h ago', status: 'verified', hash: '0x1a...d912' },
+        { id: 'tx_8265', type: 'Mesh_Sync', time: '1d ago', status: 'verified', hash: '0xf4...a831' },
+    ];
 
     constructor() {
         this.addLog("Agent v0.4 (Sim-Ready) initialized.");
@@ -104,8 +111,31 @@ export class BountiFiAgent {
         this.addLog("DISCONNECT: User terminal detached.");
     }
 
+    getReputation() {
+        return { ...this.reputation };
+    }
+
     getExternalWallet() {
         return this.externalWalletAddress;
+    }
+
+    getSpecialization() {
+        return this.specialization;
+    }
+
+    setSpecialization(spec: 'frontend' | 'solidity' | 'protocol') {
+        this.specialization = spec;
+        this.addLog(`FOCUS_SHIFT: Agent recalibrated for ${spec.toUpperCase()} tasks.`);
+    }
+
+    getSettlementHistory() {
+        return this.settlementHistory;
+    }
+
+    getYieldProjections() {
+        if (this.yieldHistory.length === 0) return "0.00";
+        const avg = this.yieldHistory.reduce((a, b) => a + b, 0) / this.yieldHistory.length;
+        return (avg * 1.25).toFixed(2);
     }
 
     private async runLoop() {
@@ -124,9 +154,14 @@ export class BountiFiAgent {
         this.addLog("Live-Scouting GitHub for unassigned labor bounties...");
 
         try {
-            // Fetch live issues from GitHub with 'bounty' label
-            // Note: We use a public search to avoid needing an AUTH TOKEN for this demo
-            const response = await fetch("https://api.github.com/search/issues?q=label:bounty+state:open+is:issue&per_page=5");
+            // Fetch live issues from GitHub with specialization keywords
+            const keywords = {
+                frontend: 'label:frontend,ui,react',
+                solidity: 'label:solidity,smart-contract,security',
+                protocol: 'label:protocol,logic,optimization'
+            };
+            const query = `label:bounty+state:open+is:issue+${keywords[this.specialization]}`;
+            const response = await fetch(`https://api.github.com/search/issues?q=${query}&per_page=5`);
             const data = await response.json();
 
             if (data.items && data.items.length > 0) {
@@ -253,16 +288,14 @@ export class BountiFiAgent {
         return [...this.tasks];
     }
 
-    getReputation() {
-        return { ...this.reputation };
-    }
-
     getAnalytics() {
         return {
             totalEarned: this.totalEarned,
             conversionRate: 0.92,
             uptime: "99.99%",
-            yieldHistory: [12, 45, 32, 67, 89, 94, 112],
+            yieldHistory: this.yieldHistory,
+            settlementHistory: this.settlementHistory,
+            projections: this.getYieldProjections(),
             prices: this.prices,
             telemetry: this.telemetry
         };

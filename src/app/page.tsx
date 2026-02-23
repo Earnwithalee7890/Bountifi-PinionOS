@@ -34,7 +34,9 @@ import {
   Moon,
   Monitor,
   Menu,
-  X as CloseIcon
+  X as CloseIcon,
+  ShieldAlert,
+  Target
 } from 'lucide-react';
 import { bountifi, BountyTask } from '@/lib/agent';
 import { isPinionConfigured } from '@/lib/pinion';
@@ -145,6 +147,7 @@ export default function BountiFiDashboard() {
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
   const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'solar'>('emerald');
   const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
+  const [specialization, setSpecialization] = useState<'frontend' | 'solidity' | 'protocol'>('frontend');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogoClick = () => {
@@ -162,6 +165,7 @@ export default function BountiFiDashboard() {
       setExternalWallet(bountifi.getExternalWallet());
       setAnalytics(bountifi.getAnalytics());
       setLeaderboard(bountifi.getLeaderboard());
+      setSpecialization(bountifi.getSpecialization());
     }, 1000);
 
     return () => clearInterval(interval);
@@ -599,6 +603,46 @@ export default function BountiFiDashboard() {
 
               {/* Right Column: Console & Controls */}
               <div className="space-y-8">
+                {/* Neural Specialization Matrix (v1.1) */}
+                <div className="glass-card p-6 bg-[var(--panel-bg)] border-[var(--glass-border)]">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Target size={18} className="text-[var(--primary)]" />
+                    <h3 className="text-xs font-black uppercase tracking-widest text-[var(--foreground)]">Neural_Specialization</h3>
+                  </div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {[
+                      { id: 'frontend', label: 'Front-end Node', desc: 'React / UI / UX Opt' },
+                      { id: 'solidity', label: 'Solidity Engine', desc: 'Contracts / Security' },
+                      { id: 'protocol', label: 'Protocol Arch', desc: 'x402 / Logic / Mesh' }
+                    ].map((spec) => (
+                      <button
+                        key={spec.id}
+                        onClick={() => {
+                          bountifi.setSpecialization(spec.id as any);
+                          setSpecialization(spec.id as any);
+                        }}
+                        className={`w-full p-4 rounded-xl border text-left transition-all ${specialization === spec.id
+                          ? 'bg-[var(--primary)]/10 border-[var(--primary)]/30'
+                          : 'bg-white/5 border-transparent opacity-60 hover:opacity-100 hover:bg-white/10'
+                          }`}
+                      >
+                        <div className="flex justify-between items-center">
+                          <span className={`text-[11px] font-black uppercase tracking-widest ${specialization === spec.id ? 'text-[var(--primary)]' : 'text-zinc-300'}`}>
+                            {spec.label}
+                          </span>
+                          {specialization === spec.id && (
+                            <motion.div
+                              layoutId="spec-dot"
+                              className="w-1.5 h-1.5 rounded-full bg-[var(--primary)] shadow-[0_0_10px_var(--primary)]"
+                            />
+                          )}
+                        </div>
+                        <p className="text-[9px] font-bold text-zinc-500 mt-1">{spec.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 {/* ADVANCED CONTROLS */}
                 <section className="glass-card p-8 bg-black/40 border-white/5">
                   <div className="flex items-center gap-3 mb-8">
@@ -624,11 +668,11 @@ export default function BountiFiDashboard() {
                   </div>
                 </section>
 
-                <section className="glass-card p-8 h-[400px] flex flex-col bg-[var(--panel-bg)] border-[var(--glass-border)] overflow-hidden relative">
+                <section className="glass-card p-8 min-h-[400px] flex flex-col bg-[var(--panel-bg)] border-[var(--glass-border)] overflow-hidden relative">
                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5 font-mono">
                     <div className="flex items-center gap-3">
                       <Terminal size={22} className="text-green-500" />
-                      <h2 className="text-xl font-black uppercase italic tracking-tighter text-white">Neural_Console</h2>
+                      <h2 className="text-xl font-black uppercase italic tracking-tighter text-white">Neural_Console_v1.1</h2>
                     </div>
                     <div className="text-[10px] font-black text-zinc-700 uppercase tracking-widest">Protocol::x402</div>
                   </div>
@@ -687,7 +731,7 @@ export default function BountiFiDashboard() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
                   <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
                     <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Total_Yield</p>
                     <p className="text-4xl font-black text-[var(--foreground)] italic tracking-tighter">${analytics?.totalEarned || 0}</p>
@@ -700,28 +744,66 @@ export default function BountiFiDashboard() {
                     <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Uptime</p>
                     <p className="text-4xl font-black text-purple-400 italic tracking-tighter">{analytics?.uptime || '---'}</p>
                   </div>
+                  <div className="bg-[var(--primary)]/5 p-6 rounded-2xl border border-[var(--primary)]/20 relative overflow-hidden group">
+                    <motion.div
+                      animate={{ opacity: [0.1, 0.3, 0.1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="absolute inset-0 bg-gradient-to-br from-[var(--primary)]/20 to-transparent"
+                    />
+                    <p className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest mb-1 relative z-10">24h_Projection</p>
+                    <p className="text-4xl font-black text-[var(--primary)] italic tracking-tighter relative z-10">${analytics?.projections || '0.00'}</p>
+                  </div>
                 </div>
 
-                <div className="h-64 flex items-end gap-3 px-4">
-                  {analytics?.yieldHistory?.map((val: number, i: number) => (
-                    <motion.div
-                      key={i}
-                      initial={{ height: 0 }}
-                      animate={{ height: `${val / 1.5}%` }}
-                      transition={{ delay: i * 0.1, duration: 1 }}
-                      className="flex-1 bg-gradient-to-t from-blue-600/40 to-purple-600/60 rounded-t-xl relative group cursor-pointer"
-                    >
-                      <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity">
-                        ${val}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="flex justify-between mt-6 px-2 text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest">
-                  <span>Epoch_01</span>
-                  <span>Epoch_03</span>
-                  <span>Epoch_05</span>
-                  <span>Epoch_07</span>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                  <div>
+                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                      <History size={14} className="text-[var(--primary)]" /> Settlement History
+                    </h3>
+                    <div className="space-y-4">
+                      {analytics?.settlementHistory?.map((tx: any) => (
+                        <div key={tx.id} className="p-5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between hover:bg-white/10 transition-colors">
+                          <div className="flex items-center gap-4">
+                            <div className="p-2 bg-emerald-500/10 rounded-lg">
+                              <ShieldCheck size={16} className="text-emerald-500" />
+                            </div>
+                            <div>
+                              <p className="text-xs font-black text-white uppercase tracking-widest">{tx.type}</p>
+                              <span className="text-[9px] text-zinc-500 font-bold uppercase">{tx.time} • {tx.id}</span>
+                            </div>
+                          </div>
+                          <span className="text-[9px] font-black text-zinc-600 font-mono tracking-tighter">{tx.hash}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] mb-8 flex items-center gap-2">
+                      <Activity size={14} className="text-[var(--primary)]" /> Performance Chart
+                    </h3>
+                    <div className="h-48 flex items-end gap-3 px-4">
+                      {analytics?.yieldHistory?.map((val: number, i: number) => (
+                        <motion.div
+                          key={i}
+                          initial={{ height: 0 }}
+                          animate={{ height: `${val / 1.5}%` }}
+                          transition={{ delay: i * 0.1, duration: 1 }}
+                          className="flex-1 bg-gradient-to-t from-blue-600/40 to-purple-600/60 rounded-t-xl relative group cursor-pointer"
+                        >
+                          <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black px-2 py-1 rounded text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity">
+                            ${val}
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between mt-6 px-2 text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest">
+                      <span>Epoch_01</span>
+                      <span>Epoch_03</span>
+                      <span>Epoch_05</span>
+                      <span>Epoch_07</span>
+                    </div>
+                  </div>
                 </div>
               </section>
 
