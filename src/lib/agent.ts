@@ -27,6 +27,13 @@ export interface SettlementTx {
     amount: string;
 }
 
+export interface Treasury {
+    gasVault: number;
+    operatingCapital: number;
+    pinionCredits: number;
+    totalFeesPaid: number;
+}
+
 export interface Analytics {
     totalEarned: number;
     conversionRate: number;
@@ -36,6 +43,9 @@ export interface Analytics {
     yieldHistory: number[];
     prices: { eth: string; usdc: string; baseGas: string };
     telemetry: { cpu: number; strategy: number; zeroTime: string };
+    treasury: Treasury;
+    subAgents: SubAgent[];
+    autoPilot: boolean;
 }
 
 export interface LeaderboardEntry {

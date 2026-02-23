@@ -49,14 +49,14 @@ export const VaultComponent: React.FC<VaultProps> = ({ treasury }) => {
                     </div>
                 </div>
 
-                <div className="bg-white/[0.03] border border-white/5 p-5 rounded-2xl group hover:border-emerald-500/30 transition-all relative overflow-hidden">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-[40px] rounded-full -mr-10 -mt-10" />
+                <div className="bg-white/[0.03] border border-white/5 p-5 rounded-2xl group hover:border-orange-500/30 transition-all relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 blur-[40px] rounded-full -mr-10 -mt-10" />
                     <div className="flex items-center justify-between mb-4">
-                        <CreditCard size={16} className="text-emerald-500 opacity-60" />
+                        <CreditCard size={16} className="text-orange-500 opacity-60" />
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Operating_Capital</span>
                     </div>
                     <p className="text-3xl font-black text-white italic tracking-tighter">${treasury.operatingCapital.toLocaleString()} <span className="text-sm font-bold opacity-40">USDC</span></p>
-                    <div className="flex items-center gap-2 mt-4 text-emerald-500">
+                    <div className="flex items-center gap-2 mt-4 text-orange-500">
                         <TrendingUp size={12} />
                         <span className="text-[10px] font-black uppercase tracking-widest">+12.4% vs Epoch_07</span>
                     </div>

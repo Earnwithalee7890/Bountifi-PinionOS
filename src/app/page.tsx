@@ -145,6 +145,8 @@ export default function BountiFiDashboard() {
   const [logs, setLogs] = useState<string[]>([]);
   const [prices, setPrices] = useState<{ eth: string, usdc: string, baseGas: string }>({ eth: "0.00", usdc: "1.00", baseGas: "0.15" });
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
+  const [balance, setBalance] = useState({ eth: "0.0042", usdc: "165.25" });
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [reputation, setReputation] = useState<Reputation | null>(null);
   const [externalWallet, setExternalWallet] = useState<string | null>(null);
   const [tasks, setTasks] = useState<BountyTask[]>([]);
@@ -429,18 +431,18 @@ export default function BountiFiDashboard() {
                     <div>
                       <p className="text-[10px] text-zinc-500 font-black mb-2 tracking-[0.2em] uppercase">Accumulated_Earn</p>
                       <div className="flex items-baseline gap-3">
-                        <span className="text-5xl font-black tracking-tighter text-white tabular-nums">{(parseFloat(balance.usdc) * (analytics?.prices?.usdc || 1)).toFixed(2)}</span>
+                        <span className="text-5xl font-black tracking-tighter text-white tabular-nums">{(parseFloat(balance.usdc) * parseFloat(analytics?.prices?.usdc || "1")).toFixed(2)}</span>
                         <span className="text-xs font-bold text-orange-400 uppercase italic">USDC</span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-6 bg-[var(--background)]/40 rounded-2xl p-4 border border-[var(--glass-border)]">
                       <div>
                         <p className="text-[9px] text-zinc-600 font-bold mb-1 uppercase tracking-widest leading-none">Gas_Reserve</p>
-                        <p className="text-lg font-black text-[var(--foreground)] tabular-nums">{(parseFloat(balance.eth) * (analytics?.prices?.eth || 1) / (analytics?.prices?.eth || 1)).toFixed(4)} <span className="text-[10px] opacity-50">ETH</span></p>
+                        <p className="text-lg font-black text-[var(--foreground)] tabular-nums">{(parseFloat(balance.eth) * parseFloat(analytics?.prices?.eth || "1") / parseFloat(analytics?.prices?.eth || "1")).toFixed(4)} <span className="text-[10px] opacity-50">ETH</span></p>
                       </div>
                       <div className="text-right">
                         <p className="text-[9px] text-[var(--foreground)] opacity-40 font-bold mb-1 uppercase tracking-widest leading-none">Market_Val</p>
-                        <p className="text-lg font-black text-orange-500 tabular-nums">${(parseFloat(balance.eth) * (analytics?.prices?.eth || 2800)).toFixed(0)}</p>
+                        <p className="text-lg font-black text-orange-500 tabular-nums">${(parseFloat(balance.eth) * parseFloat(analytics?.prices?.eth || "2800")).toFixed(0)}</p>
                       </div>
                     </div>
                     <button className="premium-btn w-full py-4 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-400 flex items-center justify-center gap-2">
@@ -459,19 +461,19 @@ export default function BountiFiDashboard() {
                   </div>
                   <div className="space-y-6 relative z-10">
                     <div className="flex items-baseline gap-4">
-                      <span className="text-5xl font-black tracking-tighter text-white tabular-nums">{reputation.score}</span>
+                      <span className="text-5xl font-black tracking-tighter text-white tabular-nums">{reputation?.score || 0}</span>
                       <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">TRUSTED</span>
                     </div>
                     <div className="space-y-4">
                       <div className="flex justify-between items-center text-[10px] mb-1">
                         <span className="text-zinc-500 font-black uppercase tracking-widest leading-none">Reliability_Index</span>
-                        <span className="text-white font-black">{(reputation.successRate * 100).toFixed(0)}%</span>
+                        <span className="text-white font-black">{((reputation?.successRate || 0.98) * 100).toFixed(0)}%</span>
                       </div>
                       <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
                         <motion.div
                           className="h-full bg-gradient-to-r from-orange-600 to-amber-600 rounded-full shadow-[0_0_100px_var(--primary)]"
                           initial={{ width: 0 }}
-                          animate={{ width: `${reputation.successRate * 100}%` }}
+                          animate={{ width: `${(reputation?.successRate || 0.98) * 100}%` }}
                           transition={{ duration: 1.5, ease: "easeOut" }}
                         />
                       </div>
@@ -795,7 +797,7 @@ export default function BountiFiDashboard() {
                   </div>
                   <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
                     <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Success_Rate</p>
-                    <p className="text-4xl font-black text-orange-500 italic tracking-tighter">{(analytics?.conversionRate * 100).toFixed(0)}%</p>
+                    <p className="text-4xl font-black text-orange-500 italic tracking-tighter">{((analytics?.conversionRate || 0.92) * 100).toFixed(0)}%</p>
                   </div>
                   <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
                     <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Uptime</p>
