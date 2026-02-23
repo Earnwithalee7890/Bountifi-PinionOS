@@ -138,6 +138,17 @@ export default function BountiFiDashboard() {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [docModal, setDocModal] = useState<string | null>(null);
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
+  const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'solar'>('emerald');
+
+  useEffect(() => {
+    document.body.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const handleLogoClick = () => {
+    setActiveTab('missions');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    bountifi.addLog("SYSTEM_RESET: Synchronizing local terminal nodes...");
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -184,14 +195,15 @@ export default function BountiFiDashboard() {
         <div className="flex items-center gap-6">
           <motion.div
             whileHover={{ scale: 1.05, rotate: 5 }}
+            onClick={handleLogoClick}
             className="cursor-pointer"
           >
             <NeuralLogo />
           </motion.div>
-          <div>
+          <div onClick={handleLogoClick} className="cursor-pointer">
             <div className="flex items-center gap-3">
               <h1 className="text-3xl font-black tracking-tighter uppercase italic bg-gradient-to-r from-emerald-400 to-amber-500 bg-clip-text text-transparent">BountiFi</h1>
-              <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-[0.2em] leading-none uppercase">ULTRA v0.6</span>
+              <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-[0.2em] leading-none uppercase">ULTRA v0.8</span>
             </div>
             <p className="text-zinc-500 text-[10px] font-black tracking-[0.3em] uppercase mt-1 opacity-60 flex items-center gap-2">
               <Activity size={10} className="text-emerald-500" /> Neural Labor Network
@@ -237,6 +249,21 @@ export default function BountiFiDashboard() {
           >
             <Settings size={20} />
           </button>
+
+          {/* THEME SWITCHER */}
+          <div className="flex bg-black/40 rounded-xl p-1 border border-white/5 gap-1">
+            {['emerald', 'amethyst', 'solar'].map((t) => (
+              <button
+                key={t}
+                onClick={() => setTheme(t as any)}
+                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all ${theme === t ? 'border-emerald-500/50 scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
+                  }`}
+              >
+                <div className={`w-3 h-3 rounded-full ${t === 'emerald' ? 'bg-emerald-500' : t === 'amethyst' ? 'bg-purple-500' : 'bg-amber-500'
+                  }`} />
+              </button>
+            ))}
+          </div>
           <button
             onClick={handleToggleAgent}
             className={`px-10 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all ${isRunning
@@ -313,12 +340,35 @@ export default function BountiFiDashboard() {
                       </div>
                       <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/5">
                         <motion.div
-                          className="h-full bg-gradient-to-r from-emerald-600 to-amber-600 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.3)]"
+                          className="h-full bg-gradient-to-r from-emerald-600 to-amber-600 rounded-full shadow-[0_0_100px_var(--primary)]"
                           initial={{ width: 0 }}
                           animate={{ width: `${reputation.successRate * 100}%` }}
                           transition={{ duration: 1.5, ease: "easeOut" }}
                         />
                       </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section className="glass-card p-8 border-white/5 relative overflow-hidden">
+                  <div className="flex items-center gap-3 mb-8">
+                    <Activity size={18} className="text-blue-500" />
+                    <h2 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em] leading-none">Neural_Resource_Load</h2>
+                  </div>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                        <p className="text-[8px] text-zinc-600 font-black uppercase tracking-widest mb-2">Compute_Load</p>
+                        <p className="text-xl font-black text-white">{analytics?.telemetry?.cpu || 12}%</p>
+                      </div>
+                      <div className="bg-black/20 p-4 rounded-2xl border border-white/5">
+                        <p className="text-[8px] text-zinc-600 font-black uppercase tracking-widest mb-2">Strategy_Conf</p>
+                        <p className="text-xl font-black text-white">{analytics?.telemetry?.strategy || 98}%</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 p-4 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                      <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">Autonomous_Optimization_Active</span>
                     </div>
                   </div>
                 </section>
@@ -675,6 +725,10 @@ export default function BountiFiDashboard() {
           {Array(10).fill(0).map((_, i) => (
             <div key={i} className="flex items-center gap-6">
               <span className="text-[9px] font-black text-emerald-500/40 uppercase tracking-[0.3em]">Neural_Mesh_Live</span>
+              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse" />
+                BASE_L2_GAS: {analytics?.prices?.baseGas || '0.15'} Gwei
+              </span>
               <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
                 ETH/USD: ${analytics?.prices?.eth || '2842.12'}

@@ -25,7 +25,8 @@ export class BountiFiAgent {
     private totalEarned = 0;
     private wallet: any = null;
     private externalWalletAddress: string | null = null;
-    private prices: { eth: string, usdc: string } = { eth: "0.00", usdc: "1.00" };
+    private prices: { eth: string, usdc: string, baseGas: string } = { eth: "0.00", usdc: "1.00", baseGas: "0.15" };
+    private telemetry: { cpu: number, strategy: number } = { cpu: 12, strategy: 98 };
 
     private reputation: Reputation = { score: 750, successRate: 0.98, totalSolved: 42 };
 
@@ -51,7 +52,7 @@ export class BountiFiAgent {
         }
     }
 
-    private addLog(message: string) {
+    public addLog(message: string) {
         const timestamp = new Date().toLocaleTimeString();
         this.logs.push(`[${timestamp}] ${message}`);
         console.log(`[BountiFi] ${message}`);
@@ -171,35 +172,44 @@ export class BountiFiAgent {
 
     private async updateFinancialData() {
         try {
+            // CoinGecko Prices
             const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,usd-coin&vs_currencies=usd");
             const data = await res.json();
             if (data.ethereum && data['usd-coin']) {
                 this.prices.eth = data.ethereum.usd.toString();
                 this.prices.usdc = data['usd-coin'].usd.toString();
-                // We'll also inject a news log periodically
-                this.addLog(`MARKET_INTEL: ETH @ $${this.prices.eth} | USDC @ $${this.prices.usdc}`);
             }
+
+            // Simulate/Fetch Base Gas (using a mock variation for now to show live movement)
+            const variation = (Math.random() * 0.1 - 0.05).toFixed(3);
+            this.prices.baseGas = (Math.max(0.01, parseFloat(this.prices.baseGas) + parseFloat(variation))).toFixed(3);
+
+            // Update Telemetry
+            this.telemetry.cpu = Math.floor(Math.random() * (45 - 5) + 5);
+            this.telemetry.strategy = Math.floor(Math.random() * (100 - 95) + 95);
+
+            this.addLog(`MARKET_INTEL: ETH @ $${this.prices.eth} | Base_Gas @ ${this.prices.baseGas} Gwei`);
         } catch (e) {
-            // Ignore price fetch errors in console
+            // Ignore fetch errors
         }
     }
 
     private async solveTask(task: BountyTask) {
-        // Step 1: Simulation Phase
+        // Step 1: Strategic Planning Phase
         task.status = 'simulating';
-        this.addLog(`[${task.id}] SIMULATION: Initializing Docker sandbox...`);
+        this.addLog(`[${task.id}] NEURAL_PLANNING: Assessing gas efficiency & L2 priority...`);
         await new Promise(resolve => setTimeout(resolve, 3000));
 
         const confidence = Math.floor(Math.random() * (100 - 80 + 1) + 80);
         task.confidence = confidence;
 
         if (confidence < 85) {
-            this.addLog(`[${task.id}] SIMULATION FAILED: Confidence ${confidence}% too low. Aborting.`);
+            this.addLog(`[${task.id}] STRATEGY REJECTED: Confidence ${confidence}% below safety margin.`);
             task.status = 'failed';
             return;
         }
 
-        this.addLog(`[${task.id}] SIMULATION SUCCESS: Confidence ${confidence}% (Safety Threshold Met)`);
+        this.addLog(`[${task.id}] STRATEGY VALIDATED: Executing autonomous patch synthesis...`);
 
         // Step 2: Solving Phase
         task.status = 'solving';
@@ -207,7 +217,7 @@ export class BountiFiAgent {
         await new Promise(resolve => setTimeout(resolve, 3000));
         this.addLog(`[${task.id}] AI-Brain generating fix...`);
         await new Promise(resolve => setTimeout(resolve, 3000));
-        this.addLog(`[${task.id}] Pull Request submitted.`);
+        this.addLog(`[${task.id}] Pushing signed commit to Pinion mesh...`);
         task.status = 'completed';
         setTimeout(() => this.triggerPayment(task), 6000);
     }
@@ -253,7 +263,8 @@ export class BountiFiAgent {
             conversionRate: 0.92,
             uptime: "99.99%",
             yieldHistory: [12, 45, 32, 67, 89, 94, 112],
-            prices: this.prices
+            prices: this.prices,
+            telemetry: this.telemetry
         };
     }
 

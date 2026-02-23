@@ -11,6 +11,31 @@
   --glass-border: rgba(16, 185, 129, 0.08);
   --success: #10b981;
   --panel-bg: rgba(5, 10, 8, 0.85);
+  --mesh-1: hsla(160, 100%, 15%, 0.15);
+  --mesh-2: hsla(40, 100%, 10%, 0.1);
+  --mesh-3: hsla(160, 100%, 10%, 0.2);
+}
+
+[data-theme='amethyst'] {
+  --primary: #a855f7;
+  --primary-glow: rgba(168, 85, 247, 0.4);
+  --accent: #ec4899;
+  --accent-glow: rgba(236, 72, 153, 0.4);
+  --glass-border: rgba(168, 85, 247, 0.08);
+  --mesh-1: hsla(270, 100%, 15%, 0.15);
+  --mesh-2: hsla(330, 100%, 10%, 0.1);
+  --mesh-3: hsla(270, 100%, 10%, 0.2);
+}
+
+[data-theme='solar'] {
+  --primary: #f59e0b;
+  --primary-glow: rgba(245, 158, 11, 0.4);
+  --accent: #10b981;
+  --accent-glow: rgba(16, 185, 129, 0.4);
+  --glass-border: rgba(245, 158, 11, 0.08);
+  --mesh-1: hsla(40, 100%, 15%, 0.15);
+  --mesh-2: hsla(160, 100%, 10%, 0.1);
+  --mesh-3: hsla(40, 100%, 10%, 0.2);
 }
 
 body {
@@ -46,10 +71,11 @@ body {
   height: 100%;
   z-index: -1;
   background:
-    radial-gradient(at 0% 0%, hsla(160, 100%, 15%, 0.15) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(40, 100%, 10%, 0.1) 0, transparent 50%),
-    radial-gradient(at 50% 100%, hsla(160, 100%, 10%, 0.2) 0, transparent 50%);
+    radial-gradient(at 0% 0%, var(--mesh-1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, var(--mesh-2) 0, transparent 50%),
+    radial-gradient(at 50% 100%, var(--mesh-3) 0, transparent 50%);
   filter: contrast(120%);
+  transition: all 1s ease-in-out;
 }
 
 .mesh-bg::after {
