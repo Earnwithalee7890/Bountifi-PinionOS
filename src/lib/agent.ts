@@ -24,6 +24,8 @@ export class BountiFiAgent {
     private tasks: BountyTask[] = [];
     private totalEarned = 0;
     private wallet: any = null;
+    private externalWalletAddress: string | null = null;
+    private prices: { eth: string, usdc: string } = { eth: "0.00", usdc: "1.00" };
 
     private reputation: Reputation = { score: 750, successRate: 0.98, totalSolved: 42 };
 
@@ -71,6 +73,40 @@ export class BountiFiAgent {
         this.addLog("Agent node deactivated.");
     }
 
+    async connectExternalWallet() {
+        if (typeof window === 'undefined' || !(window as any).ethereum) {
+            this.addLog("ERROR: No Web3 provider (MetaMask) detected.");
+            return null;
+        }
+
+        try {
+            this.addLog("INITIALIZING: Handshake with Web3 Provider...");
+            const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+            this.externalWalletAddress = accounts[0];
+            this.addLog(`SUCCESS: Terminal linked to [${this.externalWalletAddress}]`);
+
+            // Listen for account changes
+            (window as any).ethereum.on('accountsChanged', (accounts: string[]) => {
+                this.externalWalletAddress = accounts[0] || null;
+                this.addLog(`SIGNAL_CHANGE: Switched to wallet [${this.externalWalletAddress}]`);
+            });
+
+            return this.externalWalletAddress;
+        } catch (error) {
+            this.addLog(`CONNECT_FAILED: User rejected or network error.`);
+            return null;
+        }
+    }
+
+    disconnectExternalWallet() {
+        this.externalWalletAddress = null;
+        this.addLog("DISCONNECT: User terminal detached.");
+    }
+
+    getExternalWallet() {
+        return this.externalWalletAddress;
+    }
+
     private async runLoop() {
         while (this.isRunning) {
             try {
@@ -84,20 +120,67 @@ export class BountiFiAgent {
     }
 
     private async scoutForTasks() {
-        this.addLog("Scanning GitHub for unassigned x402 bounties...");
+        this.addLog("Live-Scouting GitHub for unassigned labor bounties...");
 
-        if (this.tasks.length < 5) {
-            const demoTask: BountyTask = {
-                id: Math.random().toString(36).substr(2, 6).toUpperCase(),
-                title: this.tasks.length === 0 ? "Fix memory leak in SDK" : "Implement Base L2 gas optimizer",
-                url: "https://github.com/pinion-os/skills/issues",
-                repository: "pinion-os/core",
-                status: 'pending',
-                reward: `${(Math.random() * 50 + 10).toFixed(2)} USDC`
-            };
-            this.tasks.push(demoTask);
-            this.addLog(`MATCH: [${demoTask.id}] found in ${demoTask.repository}`);
-            this.solveTask(demoTask);
+        try {
+            // Fetch live issues from GitHub with 'bounty' label
+            // Note: We use a public search to avoid needing an AUTH TOKEN for this demo
+            const response = await fetch("https://api.github.com/search/issues?q=label:bounty+state:open+is:issue&per_page=5");
+            const data = await response.json();
+
+            if (data.items && data.items.length > 0) {
+                const newTasks: BountyTask[] = data.items.map((item: any) => ({
+                    id: item.number.toString(),
+                    title: item.title,
+                    url: item.html_url,
+                    repository: item.repository_url.split('/').slice(-2).join('/'),
+                    status: 'pending',
+                    reward: `${(Math.random() * 200 + 50).toFixed(0)} USDC` // Simulated reward as GitHub issues often don't have price in metadata
+                }));
+
+                // Update tasks list, keeping only unique ones
+                const existingIds = new Set(this.tasks.map(t => t.id));
+                newTasks.forEach(task => {
+                    if (!existingIds.has(task.id) && this.tasks.length < 10) {
+                        this.tasks.push(task);
+                        this.addLog(`NEURAL_MATCH: [${task.id}] found in ${task.repository}`);
+                        this.solveTask(task);
+                    }
+                });
+            }
+        } catch (error) {
+            this.addLog("SEARCH_DELAY: GitHub API cooling down. Retrying simulated scan...");
+            // Fallback to demo task if API fails
+            if (this.tasks.length < 3) {
+                const demoTask: BountyTask = {
+                    id: "DEMO-" + Math.random().toString(36).substr(2, 4).toUpperCase(),
+                    title: "Optimization: Neural Weights compression",
+                    url: "https://github.com/pinion-os/skills",
+                    repository: "pinion-os/core",
+                    status: 'pending',
+                    reward: "145.00 USDC"
+                };
+                this.tasks.push(demoTask);
+                this.solveTask(demoTask);
+            }
+        }
+
+        // Fetch Prices (CoinGecko)
+        this.updateFinancialData();
+    }
+
+    private async updateFinancialData() {
+        try {
+            const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum,usd-coin&vs_currencies=usd");
+            const data = await res.json();
+            if (data.ethereum && data['usd-coin']) {
+                this.prices.eth = data.ethereum.usd.toString();
+                this.prices.usdc = data['usd-coin'].usd.toString();
+                // We'll also inject a news log periodically
+                this.addLog(`MARKET_INTEL: ETH @ $${this.prices.eth} | USDC @ $${this.prices.usdc}`);
+            }
+        } catch (e) {
+            // Ignore price fetch errors in console
         }
     }
 
@@ -162,6 +245,25 @@ export class BountiFiAgent {
 
     getReputation() {
         return { ...this.reputation };
+    }
+
+    getAnalytics() {
+        return {
+            totalEarned: this.totalEarned,
+            conversionRate: 0.92,
+            uptime: "99.99%",
+            yieldHistory: [12, 45, 32, 67, 89, 94, 112],
+            prices: this.prices
+        };
+    }
+
+    getLeaderboard() {
+        return [
+            { name: "AlphaNode-1", score: 2450, solved: 142 },
+            { name: "BountiFi_Agent_v0.4", score: this.reputation.score, solved: this.reputation.totalSolved },
+            { name: "CyberLabor_x", score: 680, solved: 29 },
+            { name: "ZeroFriction", score: 540, solved: 18 }
+        ].sort((a, b) => b.score - a.score);
     }
 
     isActive() {
