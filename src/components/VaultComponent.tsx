@@ -18,8 +18,8 @@ export const VaultComponent: React.FC<VaultProps> = ({ treasury }) => {
         <div className="space-y-6">
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="p-3 bg-blue-500/10 rounded-xl border border-blue-500/20">
-                        <Shield size={20} className="text-blue-400" />
+                    <div className="p-3 bg-orange-500/10 rounded-xl border border-orange-500/20">
+                        <Shield size={20} className="text-orange-400" />
                     </div>
                     <div>
                         <h3 className="text-sm font-black uppercase tracking-[0.2em] text-white italic">Protocol_Treasury</h3>
@@ -36,7 +36,7 @@ export const VaultComponent: React.FC<VaultProps> = ({ treasury }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white/[0.03] border border-white/5 p-5 rounded-2xl group hover:border-blue-500/30 transition-all">
                     <div className="flex items-center justify-between mb-4">
-                        <Cpu size={16} className="text-blue-500 opacity-60" />
+                        <Cpu size={16} className="text-orange-500 opacity-60" />
                         <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">L2_Gas_Vault</span>
                     </div>
                     <p className="text-3xl font-black text-white italic tracking-tighter">{treasury.gasVault} <span className="text-sm font-bold opacity-40">ETH</span></p>
@@ -44,7 +44,7 @@ export const VaultComponent: React.FC<VaultProps> = ({ treasury }) => {
                         <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: '45%' }}
-                            className="h-full bg-blue-500"
+                            className="h-full bg-orange-500"
                         />
                     </div>
                 </div>
@@ -76,19 +76,19 @@ export const VaultComponent: React.FC<VaultProps> = ({ treasury }) => {
                 </div>
             </div>
 
-            <div className="p-4 bg-blue-600/10 border border-blue-500/20 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-blue-600/20 transition-all">
+            <div className="p-4 bg-orange-600/10 border border-orange-500/20 rounded-2xl flex items-center justify-between group cursor-pointer hover:bg-orange-600/20 transition-all">
                 <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-blue-600/20 flex items-center justify-center">
-                        <ArrowUpRight size={20} className="text-blue-400 group-hover:rotate-45 transition-transform" />
+                    <div className="w-10 h-10 rounded-xl bg-orange-600/20 flex items-center justify-center">
+                        <ArrowUpRight size={20} className="text-orange-400 group-hover:rotate-45 transition-transform" />
                     </div>
                     <div>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-blue-400">Autonomous_Replenish_Active</p>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-orange-400">Autonomous_Replenish_Active</p>
                         <p className="text-xs font-bold text-zinc-400">AI automatically acquires Gas from rewards when balance &lt; 0.1 ETH</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                    <span className="text-[11px] font-black text-blue-400 uppercase tracking-widest">Synced</span>
+                    <div className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+                    <span className="text-[11px] font-black text-orange-400 uppercase tracking-widest">Synced</span>
                 </div>
             </div>
         </div>

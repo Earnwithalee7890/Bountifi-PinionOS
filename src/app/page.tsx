@@ -147,7 +147,7 @@ export default function BountiFiDashboard() {
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [docModal, setDocModal] = useState<string | null>(null);
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
-  const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'solar'>('emerald');
+  const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'ignite'>('ignite');
   const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
   const [specialization, setSpecialization] = useState<'frontend' | 'solidity' | 'protocol'>('frontend');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -220,8 +220,8 @@ export default function BountiFiDashboard() {
           </motion.div>
           <div onClick={handleLogoClick} className="cursor-pointer">
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-black tracking-tighter uppercase italic bg-gradient-to-r from-emerald-400 to-amber-500 bg-clip-text text-transparent">BountiFi</h1>
-              <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-black tracking-[0.2em] leading-none uppercase">ULTRA v0.8</span>
+              <h1 className="text-3xl font-black tracking-tighter uppercase italic bg-gradient-to-r from-orange-400 to-amber-600 bg-clip-text text-transparent">BountiFi</h1>
+              <span className="text-[10px] bg-orange-500/10 text-orange-400 px-3 py-1 rounded-full border border-orange-500/20 font-black tracking-[0.2em] leading-none uppercase">ULTRA v2.0</span>
             </div>
             <p className="text-zinc-500 text-[10px] font-black tracking-[0.3em] uppercase mt-1 opacity-60 flex items-center gap-2">
               <Activity size={10} className="text-emerald-500" /> <span className="hidden sm:inline">Neural Labor Network</span>
@@ -279,14 +279,14 @@ export default function BountiFiDashboard() {
 
           {/* THEME SWITCHER */}
           <div className="flex bg-[var(--panel-bg)] rounded-xl p-1 border border-[var(--glass-border)] gap-1">
-            {['emerald', 'amethyst', 'solar'].map((t) => (
+            {['emerald', 'amethyst', 'ignite'].map((t) => (
               <button
                 key={t}
                 onClick={() => setTheme(t as any)}
                 className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all ${theme === t ? 'border-[var(--primary)] scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
                   }`}
               >
-                <div className={`w-3 h-3 rounded-full ${t === 'emerald' ? 'bg-[#10b981]' : t === 'amethyst' ? 'bg-[#a855f7]' : 'bg-[#f59e0b]'
+                <div className={`w-3 h-3 rounded-full ${t === 'emerald' ? 'bg-[#10b981]' : t === 'amethyst' ? 'bg-[#a855f7]' : 'bg-[#f97316]'
                   }`} />
               </button>
             ))}
@@ -1071,7 +1071,7 @@ export default function BountiFiDashboard() {
             <div className="p-4 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-2xl glow shadow-[var(--primary)]/10">
               <NeuralLogo />
             </div>
-            <span className="text-4xl font-black italic tracking-tighter text-[var(--foreground)] uppercase bg-gradient-to-r from-emerald-400 to-amber-500 bg-clip-text text-transparent">BountiFi Protocol</span>
+            <span className="text-4xl font-black italic tracking-tighter text-[var(--foreground)] uppercase bg-gradient-to-r from-orange-400 to-amber-600 bg-clip-text text-transparent">BountiFi Protocol</span>
           </motion.div>
 
           <div className="flex flex-wrap justify-center gap-x-8 md:gap-x-16 gap-y-8 text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[var(--foreground)] opacity-40">
