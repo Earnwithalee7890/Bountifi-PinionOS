@@ -29,7 +29,10 @@ import {
   Lock,
   FileText,
   MousePointer2,
-  Network
+  Network,
+  Sun,
+  Moon,
+  Monitor
 } from 'lucide-react';
 import { bountifi, BountyTask } from '@/lib/agent';
 import { isPinionConfigured } from '@/lib/pinion';
@@ -139,10 +142,15 @@ export default function BountiFiDashboard() {
   const [docModal, setDocModal] = useState<string | null>(null);
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
   const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'solar'>('emerald');
+  const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
 
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    document.body.setAttribute('data-mode', mode);
+  }, [mode]);
 
   const handleLogoClick = () => {
     setActiveTab('missions');
@@ -185,13 +193,13 @@ export default function BountiFiDashboard() {
   };
 
   return (
-    <div className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-[#020403] text-white selection:bg-emerald-500/30">
+    <div className="min-h-screen p-6 lg:p-10 relative overflow-hidden bg-[var(--background)] text-[var(--foreground)] selection:bg-primary/30 transition-colors duration-500 font-outfit">
       <div className="mesh-bg" />
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <DocModal isOpen={!!docModal} type={docModal} onClose={() => setDocModal(null)} />
 
       {/* Header */}
-      <nav className="flex flex-col xl:flex-row justify-between items-center mb-12 gap-8 relative z-20 glass-card p-6 border-white/5 bg-black/40 backdrop-blur-2xl">
+      <nav className="flex flex-col xl:flex-row justify-between items-center mb-12 gap-8 relative z-20 glass-card p-6 border-[var(--glass-border)] bg-[var(--panel-bg)] backdrop-blur-2xl">
         <div className="flex items-center gap-6">
           <motion.div
             whileHover={{ scale: 1.05, rotate: 5 }}
@@ -212,7 +220,7 @@ export default function BountiFiDashboard() {
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex bg-black/40 rounded-2xl p-1 border border-white/5 hidden md:flex">
+        <div className="flex bg-[var(--panel-bg)] rounded-2xl p-1 border border-[var(--glass-border)] hidden md:flex">
           {[
             { id: 'missions', label: 'Mission Control', icon: Zap },
             { id: 'analytics', label: 'Earning Analytics', icon: TrendingUp },
@@ -222,8 +230,8 @@ export default function BountiFiDashboard() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-3 px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${activeTab === tab.id
-                ? 'bg-white/10 text-white shadow-lg'
-                : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'
+                ? 'bg-[var(--primary)] text-white shadow-lg'
+                : 'text-zinc-500 hover:text-[var(--primary)] hover:bg-[var(--primary)]/5'
                 }`}
             >
               <tab.icon size={16} />
@@ -245,25 +253,43 @@ export default function BountiFiDashboard() {
           </button>
           <button
             onClick={() => setIsSettingsOpen(true)}
-            className="p-3 glass-card hover:bg-white/10 transition-all text-zinc-400 hover:text-white"
+            className="p-3 glass-card hover:bg-[var(--primary)]/10 transition-all text-zinc-400 hover:text-[var(--primary)]"
           >
             <Settings size={20} />
           </button>
 
           {/* THEME SWITCHER */}
-          <div className="flex bg-black/40 rounded-xl p-1 border border-white/5 gap-1">
+          <div className="flex bg-[var(--panel-bg)] rounded-xl p-1 border border-[var(--glass-border)] gap-1">
             {['emerald', 'amethyst', 'solar'].map((t) => (
               <button
                 key={t}
                 onClick={() => setTheme(t as any)}
-                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all ${theme === t ? 'border-emerald-500/50 scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
+                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all ${theme === t ? 'border-[var(--primary)] scale-110 shadow-lg' : 'border-transparent opacity-40 hover:opacity-100'
                   }`}
               >
-                <div className={`w-3 h-3 rounded-full ${t === 'emerald' ? 'bg-emerald-500' : t === 'amethyst' ? 'bg-purple-500' : 'bg-amber-500'
+                <div className={`w-3 h-3 rounded-full ${t === 'emerald' ? 'bg-[#10b981]' : t === 'amethyst' ? 'bg-[#a855f7]' : 'bg-[#f59e0b]'
                   }`} />
               </button>
             ))}
           </div>
+          {/* MODE SWITCHER */}
+          <div className="flex bg-[var(--panel-bg)] rounded-xl p-1 border border-[var(--glass-border)] gap-1">
+            {[
+              { id: 'dark', icon: Moon },
+              { id: 'light', icon: Sun },
+              { id: 'slate', icon: Monitor }
+            ].map((m) => (
+              <button
+                key={m.id}
+                onClick={() => setMode(m.id as any)}
+                className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-all ${mode === m.id ? 'border-[var(--primary)] scale-110 shadow-lg bg-[var(--primary)]/10' : 'border-transparent opacity-40 hover:opacity-100'
+                  }`}
+              >
+                <m.icon size={14} className={mode === m.id ? 'text-[var(--primary)]' : 'text-zinc-500'} />
+              </button>
+            ))}
+          </div>
+
           <button
             onClick={handleToggleAgent}
             className={`px-10 py-3 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all ${isRunning
@@ -294,7 +320,7 @@ export default function BountiFiDashboard() {
                   </div>
                   <div className="flex items-center gap-3 mb-8">
                     <Terminal size={18} className="text-blue-400" />
-                    <h2 className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.3em] leading-none">Internal_Ledger</h2>
+                    <h2 className="text-[10px] font-black text-[var(--foreground)] opacity-60 uppercase tracking-[0.3em] leading-none">Internal_Ledger</h2>
                   </div>
                   <div className="space-y-8 relative z-10">
                     <div>
@@ -304,13 +330,13 @@ export default function BountiFiDashboard() {
                         <span className="text-xs font-bold text-emerald-400 uppercase italic">USDC</span>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-6 bg-black/20 rounded-2xl p-4 border border-white/5">
+                    <div className="grid grid-cols-2 gap-6 bg-[var(--background)]/40 rounded-2xl p-4 border border-[var(--glass-border)]">
                       <div>
                         <p className="text-[9px] text-zinc-600 font-bold mb-1 uppercase tracking-widest leading-none">Gas_Reserve</p>
-                        <p className="text-lg font-black text-zinc-200 tabular-nums">{(parseFloat(balance.eth) * (analytics?.prices?.eth || 1) / (analytics?.prices?.eth || 1)).toFixed(4)} <span className="text-[10px] text-zinc-500">ETH</span></p>
+                        <p className="text-lg font-black text-[var(--foreground)] tabular-nums">{(parseFloat(balance.eth) * (analytics?.prices?.eth || 1) / (analytics?.prices?.eth || 1)).toFixed(4)} <span className="text-[10px] opacity-50">ETH</span></p>
                       </div>
                       <div className="text-right">
-                        <p className="text-[9px] text-zinc-600 font-bold mb-1 uppercase tracking-widest leading-none">Market_Val</p>
+                        <p className="text-[9px] text-[var(--foreground)] opacity-40 font-bold mb-1 uppercase tracking-widest leading-none">Market_Val</p>
                         <p className="text-lg font-black text-emerald-500 tabular-nums">${(parseFloat(balance.eth) * (analytics?.prices?.eth || 2800)).toFixed(0)}</p>
                       </div>
                     </div>
@@ -376,14 +402,14 @@ export default function BountiFiDashboard() {
 
               {/* Center: Mission Control */}
               <div className="xl:col-span-2 space-y-8">
-                <section className="glass-card p-8 relative overflow-hidden flex flex-col min-h-[720px] bg-black/40 border-white/10">
+                <section className="glass-card p-8 relative overflow-hidden flex flex-col min-h-[720px] bg-[var(--panel-bg)] border-[var(--glass-border)]">
                   <div className="scan-line" />
                   <div className="flex items-center justify-between mb-10 pb-6 border-b border-white/5 relative z-10">
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-blue-600/10 rounded-xl">
-                        <Search size={24} className="text-blue-500" />
+                      <div className="p-3 bg-[var(--primary)]/10 rounded-xl">
+                        <Search size={24} className="text-[var(--primary)]" />
                       </div>
-                      <h2 className="text-2xl font-black uppercase italic tracking-tighter text-white">Neural Mission Hub</h2>
+                      <h2 className="text-2xl font-black uppercase italic tracking-tighter text-[var(--foreground)]">Neural Mission Hub</h2>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className="flex items-center gap-2 text-[10px] font-black text-green-500 uppercase tracking-widest bg-green-500/5 border border-green-500/20 px-5 py-2 rounded-xl">
@@ -412,7 +438,7 @@ export default function BountiFiDashboard() {
                             key={task.id}
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
-                            className="p-8 glass-card border-white/5 hover:border-blue-500/20 transition-all group relative overflow-hidden bg-black/40 hover:bg-white/[0.03]"
+                            className="p-8 glass-card border-[var(--glass-border)] hover:border-[var(--primary)]/20 transition-all group relative overflow-hidden bg-[var(--background)]/20 hover:bg-[var(--primary)]/5"
                           >
                             <div className="flex justify-between items-start relative z-10">
                               <div className="flex-1">
@@ -511,7 +537,7 @@ export default function BountiFiDashboard() {
                   </div>
                 </section>
 
-                <section className="glass-card p-8 h-[400px] flex flex-col bg-black/60 border-white/5 overflow-hidden relative">
+                <section className="glass-card p-8 h-[400px] flex flex-col bg-[var(--panel-bg)] border-[var(--glass-border)] overflow-hidden relative">
                   <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5 font-mono">
                     <div className="flex items-center gap-3">
                       <Terminal size={22} className="text-green-500" />
@@ -575,16 +601,16 @@ export default function BountiFiDashboard() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Total_Yield</p>
-                    <p className="text-4xl font-black text-white italic tracking-tighter">${analytics?.totalEarned || 0}</p>
+                  <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
+                    <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Total_Yield</p>
+                    <p className="text-4xl font-black text-[var(--foreground)] italic tracking-tighter">${analytics?.totalEarned || 0}</p>
                   </div>
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Success_Rate</p>
+                  <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
+                    <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Success_Rate</p>
                     <p className="text-4xl font-black text-emerald-500 italic tracking-tighter">{(analytics?.conversionRate * 100).toFixed(0)}%</p>
                   </div>
-                  <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
-                    <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Uptime</p>
+                  <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
+                    <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Uptime</p>
                     <p className="text-4xl font-black text-purple-400 italic tracking-tighter">{analytics?.uptime || '---'}</p>
                   </div>
                 </div>
@@ -604,7 +630,7 @@ export default function BountiFiDashboard() {
                     </motion.div>
                   ))}
                 </div>
-                <div className="flex justify-between mt-6 px-2 text-[10px] font-black text-zinc-600 uppercase tracking-widest">
+                <div className="flex justify-between mt-6 px-2 text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest">
                   <span>Epoch_01</span>
                   <span>Epoch_03</span>
                   <span>Epoch_05</span>
@@ -619,35 +645,35 @@ export default function BountiFiDashboard() {
                 </div>
                 <div className="space-y-8">
                   <div className="space-y-3">
-                    <div className="flex justify-between text-[10px] font-black uppercase text-zinc-500">
+                    <div className="flex justify-between text-[10px] font-black uppercase text-[var(--foreground)] opacity-60">
                       <span>Node Latency</span>
                       <span className="text-green-400">12ms</span>
                     </div>
-                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-[var(--background)]/20 rounded-full overflow-hidden">
                       <div className="w-[15%] h-full bg-green-500" />
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <div className="flex justify-between text-[10px] font-black uppercase text-zinc-500">
+                    <div className="flex justify-between text-[10px] font-black uppercase text-[var(--foreground)] opacity-60">
                       <span>PR Merge Speed</span>
                       <span className="text-blue-400">1.4h avg</span>
                     </div>
-                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-[var(--background)]/20 rounded-full overflow-hidden">
                       <div className="w-[45%] h-full bg-blue-500" />
                     </div>
                   </div>
                   <div className="space-y-3">
-                    <div className="flex justify-between text-[10px] font-black uppercase text-zinc-500">
+                    <div className="flex justify-between text-[10px] font-black uppercase text-[var(--foreground)] opacity-60">
                       <span>Pinion Data Sync</span>
                       <span className="text-purple-400">98% Synced</span>
                     </div>
-                    <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                    <div className="w-full h-1.5 bg-[var(--background)]/20 rounded-full overflow-hidden">
                       <div className="w-[98%] h-full bg-purple-500" />
                     </div>
                   </div>
                 </div>
-                <div className="mt-12 p-6 rounded-2xl border border-white/5 bg-black/40">
-                  <p className="text-xs text-zinc-500 font-medium leading-[1.8]">
+                <div className="mt-12 p-6 rounded-2xl border border-[var(--glass-border)] bg-[var(--panel-bg)]/40">
+                  <p className="text-xs text-[var(--foreground)] opacity-50 font-medium leading-[1.8]">
                     BountiFi protocol monitoring provides real-time verification of autonomous labor outputs and settlement integrity using the x402 Layer-2 network.
                   </p>
                 </div>
@@ -664,13 +690,13 @@ export default function BountiFiDashboard() {
               className="max-w-4xl mx-auto py-10"
             >
               <div className="text-center mb-16">
-                <Globe size={64} className="text-blue-600/40 mx-auto mb-8 animate-pulse" />
-                <h2 className="text-6xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-white to-zinc-600 bg-clip-text text-transparent">Global Rankings</h2>
-                <p className="text-xs font-black text-zinc-500 tracking-[0.4em] uppercase mt-4">Autonomous Labor Authority (ALA) Verification</p>
+                <Globe size={64} className="text-[var(--primary)] opacity-40 mx-auto mb-8 animate-pulse" />
+                <h2 className="text-6xl font-black tracking-tighter uppercase italic bg-gradient-to-b from-[var(--foreground)] to-zinc-600 bg-clip-text text-transparent">Global Rankings</h2>
+                <p className="text-xs font-black text-[var(--foreground)] opacity-40 tracking-[0.4em] uppercase mt-4">Autonomous Labor Authority (ALA) Verification</p>
               </div>
 
-              <div className="glass-card overflow-hidden bg-black/40">
-                <div className="grid grid-cols-4 p-8 border-b border-white/5 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+              <div className="glass-card overflow-hidden bg-[var(--panel-bg)]">
+                <div className="grid grid-cols-4 p-8 border-b border-[var(--glass-border)] text-[10px] font-black uppercase tracking-widest text-[var(--foreground)] opacity-50">
                   <span className="col-span-2">Agent ID / Designation</span>
                   <span className="text-center">Missions Solved</span>
                   <span className="text-right">Reputation Score</span>
@@ -692,14 +718,14 @@ export default function BountiFiDashboard() {
                         </div>
                       </div>
                       <div className="text-center">
-                        <span className="text-xl font-black text-white tabular-nums tracking-tighter">{entry.solved}</span>
-                        <span className="block text-[8px] font-black text-zinc-600 uppercase tracking-widest mt-1">Confirmed</span>
+                        <span className="text-xl font-black text-[var(--foreground)] tabular-nums tracking-tighter">{entry.solved}</span>
+                        <span className="block text-[8px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest mt-1">Confirmed</span>
                       </div>
                       <div className="text-right flex flex-col items-end">
-                        <span className={`text-2xl font-black italic tracking-tighter ${idx === 0 ? 'text-blue-500' : 'text-white'}`}>{entry.score}</span>
+                        <span className={`text-2xl font-black italic tracking-tighter ${idx === 0 ? 'text-[var(--primary)]' : 'text-[var(--foreground)]'}`}>{entry.score}</span>
                         <div className="flex gap-1 mt-2">
                           {[1, 2, 3, 4, 5].map((s) => (
-                            <div key={s} className={`w-3 h-0.5 rounded-full ${s <= (5 - idx) ? 'bg-blue-500' : 'bg-white/5'}`} />
+                            <div key={s} className={`w-3 h-0.5 rounded-full ${s <= (5 - idx) ? 'bg-[var(--primary)]' : 'bg-[var(--foreground)]/5'}`} />
                           ))}
                         </div>
                       </div>
@@ -716,7 +742,7 @@ export default function BountiFiDashboard() {
       </main>
 
       {/* MISSION STRIP TICKER */}
-      <div className="fixed bottom-0 left-0 w-full bg-[#050a08]/80 backdrop-blur-xl border-t border-emerald-500/10 z-[50] py-4 overflow-hidden mask-fade-edges">
+      <div className="fixed bottom-0 left-0 w-full bg-[var(--ticker-bg)] backdrop-blur-xl border-t border-[var(--glass-border)] z-[50] py-4 overflow-hidden mask-fade-edges">
         <motion.div
           animate={{ x: [0, -1000] }}
           transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
@@ -725,22 +751,22 @@ export default function BountiFiDashboard() {
           {Array(10).fill(0).map((_, i) => (
             <div key={i} className="flex items-center gap-6">
               <span className="text-[9px] font-black text-emerald-500/40 uppercase tracking-[0.3em]">Neural_Mesh_Live</span>
-              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+              <span className="text-[10px] font-black text-[var(--foreground)] uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse" />
                 BASE_L2_GAS: {analytics?.prices?.baseGas || '0.15'} Gwei
               </span>
-              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+              <span className="text-[10px] font-black text-[var(--foreground)] uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
                 ETH/USD: ${analytics?.prices?.eth || '2842.12'}
               </span>
-              <span className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+              <span className="text-[10px] font-black text-[var(--foreground)] uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-orange-500" />
                 BTC/USD: $94,102.45
               </span>
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest italic animate-pulse">
+              <span className="text-[10px] font-black text-[var(--foreground)] opacity-40 uppercase tracking-widest italic animate-pulse">
                 [ SIGNAL_INTACT: x402 SECURE ]
               </span>
-              <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">
+              <span className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest">
                 Latest_Block: #1948271
               </span>
             </div>
@@ -749,36 +775,36 @@ export default function BountiFiDashboard() {
       </div>
 
       {/* FOOTER */}
-      <footer className="mt-40 border-t border-white/5 pt-32 pb-32 relative z-10 px-8">
+      <footer className="mt-40 border-t border-[var(--glass-border)] pt-32 pb-32 relative z-10 px-8">
         <div className="max-w-[1800px] mx-auto flex flex-col items-center gap-16 text-center">
           <motion.div
             whileHover={{ scale: 1.02 }}
             className="flex items-center gap-5 cursor-pointer"
           >
-            <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl glow shadow-emerald-500/10">
+            <div className="p-4 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-2xl glow shadow-[var(--primary)]/10">
               <NeuralLogo />
             </div>
-            <span className="text-4xl font-black italic tracking-tighter text-white uppercase bg-gradient-to-r from-emerald-400 to-amber-500 bg-clip-text text-transparent">BountiFi Protocol</span>
+            <span className="text-4xl font-black italic tracking-tighter text-[var(--foreground)] uppercase bg-gradient-to-r from-emerald-400 to-amber-500 bg-clip-text text-transparent">BountiFi Protocol</span>
           </motion.div>
 
-          <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 text-[11px] font-black uppercase tracking-[0.4em] text-zinc-500">
+          <div className="flex flex-wrap justify-center gap-x-16 gap-y-8 text-[11px] font-black uppercase tracking-[0.4em] text-[var(--foreground)] opacity-40">
             {['Architecture', 'Simulation_Engine', 'Reputation_Oracle', 'Privacy_Policy', 'Autonomous_Terms'].map((item) => (
               <span
                 key={item}
                 onClick={() => setDocModal(item)}
-                className="hover:text-emerald-400 cursor-pointer transition-all hover:tracking-[0.6em] duration-300"
+                className="hover:text-[var(--primary)] cursor-pointer transition-all hover:tracking-[0.6em] duration-300"
               >
                 {item}
               </span>
             ))}
           </div>
 
-          <p className="max-w-3xl text-sm text-zinc-600 font-medium leading-[2.2] opacity-80 uppercase tracking-widest text-[11px] font-black">
+          <p className="max-w-3xl text-sm text-[var(--foreground)] opacity-60 font-medium leading-[2.2] uppercase tracking-widest text-[11px] font-black">
             BountiFi is the world's most advanced autonomous neural labor marketplace. <br />
             Engineered on the PinionOS decentralized kernel to bridge human capital requirements with AI agent capabilities.
           </p>
 
-          <div className="text-[10px] font-black text-zinc-800 font-mono tracking-[0.4em] uppercase bg-emerald-500/5 px-12 py-4 rounded-full border border-emerald-500/10 backdrop-blur-3xl shadow-2xl">
+          <div className="text-[10px] font-black text-[var(--foreground)] opacity-40 font-mono tracking-[0.4em] uppercase bg-[var(--primary)]/5 px-12 py-4 rounded-full border border-[var(--primary)]/10 backdrop-blur-3xl shadow-2xl">
             © 2026 BOUNTIFI_LABS • PINION_HACKATHON_ULTRA_SUBMISSION
           </div>
         </div>

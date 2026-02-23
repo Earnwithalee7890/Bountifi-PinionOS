@@ -14,6 +14,29 @@
   --mesh-1: hsla(160, 100%, 15%, 0.15);
   --mesh-2: hsla(40, 100%, 10%, 0.1);
   --mesh-3: hsla(160, 100%, 10%, 0.2);
+  --ticker-bg: rgba(5, 10, 8, 0.8);
+}
+
+[data-mode='light'] {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --panel-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --mesh-1: hsla(210, 100%, 90%, 1);
+  --mesh-2: hsla(190, 100%, 95%, 1);
+  --mesh-3: hsla(210, 100%, 92%, 1);
+  --ticker-bg: rgba(255, 255, 255, 0.9);
+}
+
+[data-mode='slate'] {
+  --background: #1e293b;
+  --foreground: #f8fafc;
+  --panel-bg: rgba(15, 23, 42, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --mesh-1: hsla(220, 30%, 15%, 0.5);
+  --mesh-2: hsla(220, 30%, 20%, 0.5);
+  --mesh-3: hsla(220, 30%, 10%, 0.5);
+  --ticker-bg: rgba(15, 23, 42, 0.8);
 }
 
 [data-theme='amethyst'] {
@@ -132,9 +155,10 @@ body {
 }
 
 .premium-btn {
-  background: linear-gradient(to right, #000, #111);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--panel-bg);
+  border: 1px solid var(--glass-border);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--foreground);
 }
 
 .premium-btn:hover {
