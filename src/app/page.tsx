@@ -149,7 +149,7 @@ export default function BountiFiDashboard() {
   const [simDepth, setSimDepth] = useState<'quick' | 'standard' | 'deep'>('standard');
   const [theme, setTheme] = useState<'emerald' | 'amethyst' | 'ignite'>('ignite');
   const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
-  const [specialization, setSpecialization] = useState<'frontend' | 'solidity' | 'protocol'>('frontend');
+  const [specialization, setSpecialization] = useState<'frontend' | 'solidity' | 'protocol' | 'rust'>('frontend');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [subAgents, setSubAgents] = useState<any[]>([]);
   const [autoPilot, setAutoPilot] = useState(false);
@@ -645,6 +645,7 @@ export default function BountiFiDashboard() {
                     {[
                       { id: 'frontend', label: 'Front-end Node', desc: 'React / UI / UX Opt' },
                       { id: 'solidity', label: 'Solidity Engine', desc: 'Contracts / Security' },
+                      { id: 'rust', label: 'Rust Core', desc: 'Performance / WASM' },
                       { id: 'protocol', label: 'Protocol Arch', desc: 'x402 / Logic / Mesh' }
                     ].map((spec) => (
                       <button

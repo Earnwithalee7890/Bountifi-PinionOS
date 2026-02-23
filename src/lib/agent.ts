@@ -29,7 +29,7 @@ export class BountiFiAgent {
     private telemetry: { cpu: number, strategy: number, zeroTime: string } = { cpu: 12, strategy: 98, zeroTime: "0.0ms" };
 
     private reputation: Reputation = { score: 750, successRate: 0.98, totalSolved: 42 };
-    private specialization: 'frontend' | 'solidity' | 'protocol' = 'frontend';
+    private specialization: 'frontend' | 'solidity' | 'protocol' | 'rust' = 'frontend';
     private autoPilot = false;
     private treasury = {
         gasVault: 0.45, // ETH
@@ -137,7 +137,7 @@ export class BountiFiAgent {
         return this.specialization;
     }
 
-    setSpecialization(spec: 'frontend' | 'solidity' | 'protocol') {
+    setSpecialization(spec: 'frontend' | 'solidity' | 'protocol' | 'rust') {
         this.specialization = spec;
         this.addLog(`FOCUS_SHIFT: Agent recalibrated for ${spec.toUpperCase()} tasks.`);
     }
@@ -201,11 +201,13 @@ export class BountiFiAgent {
 
         try {
             // Fetch live issues from GitHub with specialization keywords
-            const keywords = {
+            const keywords: Record<string, string> = {
                 frontend: 'label:frontend,ui,react',
                 solidity: 'label:solidity,smart-contract,security',
+                rust: 'label:rust,blockchain,wasm',
                 protocol: 'label:protocol,logic,optimization'
             };
+
             const query = `label:bounty+state:open+is:issue+${keywords[this.specialization]}`;
             const response = await fetch(`https://api.github.com/search/issues?q=${query}&per_page=5`);
             const data = await response.json();
