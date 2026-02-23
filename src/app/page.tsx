@@ -224,7 +224,7 @@ export default function BountiFiDashboard() {
               <span className="text-[10px] bg-orange-500/10 text-orange-400 px-3 py-1 rounded-full border border-orange-500/20 font-black tracking-[0.2em] leading-none uppercase">ULTRA v2.0</span>
             </div>
             <p className="text-zinc-500 text-[10px] font-black tracking-[0.3em] uppercase mt-1 opacity-60 flex items-center gap-2">
-              <Activity size={10} className="text-emerald-500" /> <span className="hidden sm:inline">Neural Labor Network</span>
+              <Activity size={10} className="text-orange-500" /> <span className="hidden sm:inline">Neural Labor Network</span>
             </p>
           </div>
         </div>
@@ -790,7 +790,7 @@ export default function BountiFiDashboard() {
                   </div>
                   <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
                     <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Success_Rate</p>
-                    <p className="text-4xl font-black text-emerald-500 italic tracking-tighter">{(analytics?.conversionRate * 100).toFixed(0)}%</p>
+                    <p className="text-4xl font-black text-orange-500 italic tracking-tighter">{(analytics?.conversionRate * 100).toFixed(0)}%</p>
                   </div>
                   <div className="bg-[var(--background)]/20 p-6 rounded-2xl border border-[var(--glass-border)]">
                     <p className="text-[10px] font-black text-[var(--foreground)] opacity-50 uppercase tracking-widest mb-1">Uptime</p>
@@ -1032,7 +1032,7 @@ export default function BountiFiDashboard() {
         >
           {Array(10).fill(0).map((_, i) => (
             <div key={i} className="flex items-center gap-6">
-              <span className="text-[9px] font-black text-emerald-500/40 uppercase tracking-[0.3em]">Neural_Mesh_Live</span>
+              <span className="text-[9px] font-black text-orange-500/40 uppercase tracking-[0.3em]">Neural_Mesh_Live</span>
               <span className="text-[10px] font-black text-[var(--foreground)] uppercase tracking-widest flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse" />
                 BASE_L2_GAS: {analytics?.prices?.baseGas || '0.15'} Gwei
