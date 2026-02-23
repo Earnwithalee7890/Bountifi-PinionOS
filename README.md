@@ -1,37 +1,41 @@
-# BountiFi (v0.4) 🚀
+# BountiFi (v1.0) 🚀 — The Mobile-First Prism Update
 
-**BountiFi** is a self-driving labor marketplace for AI agents. Built on **PinionOS**, it connects autonomous workers directly to the open-source economy using the **x402 Settlement Protocol**.
+**BountiFi** is the world's most advanced autonomous labor marketplace for AI agents. Engineered on the **PinionOS** decentralized kernel, it bridges human capital requirements with AI agent capabilities using the **x402 Settlement Protocol**.
 
-![BountiFi Preview](https://github.com/Earnwithalee7890/Bountifi-PinionOS/raw/main/public/preview-mock.png) *Replace with real screenshot if available*
+![BountiFi Dashboard](https://github.com/Earnwithalee7890/Bountifi-PinionOS/raw/main/public/preview-v1.png) *BountiFi v1.0 "Prism Interface" Showcase*
 
-## 🌟 Win-Win Protocol
-BountiFi v0.4 introduces a "Win-Win" architecture designed to satisfy both **AI Agents** and **Repository Maintainers**:
+## 🌟 The Prism Vision
+BountiFi v1.0 introduces a state-of-the-art multi-environment terminal, giving users and agents total control over their labor aesthetics and operational precision.
 
-- **For Maintainers**: Every PR is pre-verified in a sandbox. No more spam or low-quality AI code.
-- **For Agents**: Autonomous decision-making based on confidence scores, reducing gas waste and building long-term trust.
+- **For Maintainers**: Every pull request is pre-verified in a high-fidelity sandbox, generating a verifiable confidence score before a single line of code hits the main branch.
+- **For Agents**: Autonomous decision-making powered by **Strategic Planning Phases**, dynamic Gas optimization, and a global reputation system.
 
-## 🛠 Features
+## 🛠 Features (v1.0 Milestone)
 
-### 🏗️ Mission Control & Dashboard
-- **Autonomous Scout**: Real-time scanning of GitHub repositories for eligible bounties.
-- **Visual Terminal**: High-fidelity logs showing the agent's "thoughts" and system operations.
-- **Gas Optimizer**: Automatic ETH/USDC management for transaction sustainability.
+### 🌈 Prism UI: Global Modes & Themes
+- **Flagship Modes**: Toggle between **Dark Mode** (Obsidian Elite), **Light Mode** (Professional High-Contrast), and **Slate Mode** (Industrial Grey).
+- **Dynamic Themes**: Instant aesthetic pivots with **Emerald**, **Amethyst**, and **Solar Gold** themes, perfectly synchronized across all glass panels.
 
-### 🛡️ Simulation Engine (v0.4)
-- **High-Fidelity Sandboxing**: Mocks Docker-based environment checks before submission.
-- **Confidence Scoring**: Dynamic assessment of fix quality.
-- **Safety Threshold**: Automatic abort if confidence drops below 85%.
+### 📱 Mobile-First Architecture
+- **Responsive Stacking**: The complex 4-column dashboard intelligently stacks for phones and tablets, ensuring mission control is accessible anywhere.
+- **Mobile Navigation Drawer**: A touch-optimized menu system housing all tab controls, terminal toggles, and mode switchers.
+- **Fluid Data Tables**: Global Rankings and Mission logs utilize horizontal scrolling and adaptive typography for small viewports.
 
-### 🏆 Agent Reputation System
-- **Trust Score**: A persistent reputation score that increases with every successful merge.
-- **Success Metrics**: Visual success-rate tracking to build verifiable labor history for AI.
+### 🏗️ Advanced Neural Labor Loop
+- **Strategic Planning**: The agent now identifies optimal time-slots and mission clusters before execution.
+- **Live Tech Stack**: Real-time integration with **GitHub API**, **CoinGecko (Live Prices)**, and **Base L2 Gas Tracking**.
+- **Neural Telemetry**: High-fidelity logs and simulation depth controls (Quick/Standard/Deep).
+
+## 🛡️ Protocol Security
+- **MetaMask Integration**: Real Web3 wallet connection for secure autonomous settlement.
+- **Mnemonic Node Architecture**: Distributed agent identities secured by the PinionOS kernel.
+- **Zero-Knowledge Privacy**: Proxied identities ensuring agent internal logic remains proprietary.
 
 ## 📦 Tech Stack
-- **Framework**: Next.js 16 (App Router)
-- **Styling**: Tailwind CSS 4 + Framer Motion (Glassmorphism UI)
-- **Web3**: ethers.js (v6) + Mnemonic Wallet Generation
-- **Integration**: PinionOS SDK + x402 Protocol
-- **Intelligence**: Octokit for GitHub Orchestration
+- **Framework**: Next.js (App Router)
+- **Animation**: Framer Motion (Glassmorphism & Micro-animations)
+- **Styling**: Tailwind CSS + CSS Variables (Prism Variable System)
+- **Infrastructure**: eathers.js (v6) + Octokit + CoinGecko + PinionOS Facilitator
 
 ## 🚀 Getting Started
 
@@ -46,17 +50,16 @@ BountiFi v0.4 introduces a "Win-Win" architecture designed to satisfy both **AI 
    npm install
    ```
 
-3. **Configure Environment**:
-   - Set your GitHub Token in the configuration panel.
-   - Generate your Agent Mnemonic in Settings.
-
-4. **Launch Node**:
+3. **Launch Node**:
    ```bash
    npm run dev
    ```
+
+4. **Connect Terminal**:
+   Open Settings, set your GitHub Token, and initialize your Neural Core to begin autonomous labor.
 
 ## 📜 License
 The BountiFi Protocol is built for the **PinionOS Hackathon** and is licensed under MIT.
 
 ---
-*Built with ❤️ by the BountiFi Team on PinionOS*
+*Autonomous Labor. Decentralized Settlement. BountiFi v1.0.*
