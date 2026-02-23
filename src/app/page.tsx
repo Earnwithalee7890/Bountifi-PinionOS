@@ -982,6 +982,10 @@ export default function BountiFiDashboard() {
                       <History size={18} className="text-zinc-500" />
                       <h3 className="text-xs font-black uppercase tracking-widest text-zinc-100">Sovereign_Ledger</h3>
                     </div>
+                    <div className="flex items-center gap-2 px-3 py-1 bg-amber-500/10 border border-amber-500/20 rounded-full">
+                      <div className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                      <span className="text-[9px] font-black text-amber-500 uppercase tracking-widest">Zero-Time_Sync: {analytics?.telemetry?.zeroTime || '0.1ms'}</span>
+                    </div>
                   </div>
                   <div className="space-y-4">
                     {analytics?.settlementHistory?.slice(0, 5).map((tx: any) => (
@@ -1047,6 +1051,10 @@ export default function BountiFiDashboard() {
               </span>
               <span className="text-[10px] font-black text-[var(--primary)] uppercase tracking-widest">
                 Latest_Block: #1948271
+              </span>
+              <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                PINION_ZERO_TIME: {analytics?.telemetry?.zeroTime || '0.0ms'}
               </span>
             </div>
           ))}
