@@ -30,11 +30,24 @@ export class BountiFiAgent {
 
     private reputation: Reputation = { score: 750, successRate: 0.98, totalSolved: 42 };
     private specialization: 'frontend' | 'solidity' | 'protocol' = 'frontend';
-    private yieldHistory: number[] = [12, 45, 32, 67, 89, 94, 112];
+    private autoPilot = false;
+    private treasury = {
+        gasVault: 0.45, // ETH
+        operatingCapital: 1250.00, // USDC
+        pinionCredits: 2500,
+        totalFeesPaid: 0
+    };
+    private subAgents = [
+        { id: 'Node-Alpha', status: 'active', task: 'Monitoring' },
+        { id: 'Node-Beta', status: 'idle', task: 'Standby' },
+        { id: 'Node-Gamma', status: 'active', task: 'Simulating' },
+        { id: 'Node-Delta', status: 'idle', task: 'Standby' }
+    ];
+    private yieldHistory: number[] = [45, 112, 130, 210, 165, 305, 122];
     private settlementHistory: any[] = [
-        { id: 'tx_8271', type: 'Frontend_Fix', time: '2h ago', status: 'verified', hash: '0x82...f2ea' },
-        { id: 'tx_8269', type: 'Logic_Opt', time: '5h ago', status: 'verified', hash: '0x1a...d912' },
-        { id: 'tx_8265', type: 'Mesh_Sync', time: '1d ago', status: 'verified', hash: '0xf4...a831' },
+        { id: 'tx_9012', type: 'Sovereign_Tip', time: '10m ago', status: 'settled', hash: '0x3b...e12a', amount: '-2.00 USDC' },
+        { id: 'tx_8271', type: 'Frontend_Fix', time: '2h ago', status: 'verified', hash: '0x82...f2ea', amount: '+145.00 USDC' },
+        { id: 'tx_8269', type: 'Logic_Opt', time: '5h ago', status: 'verified', hash: '0x1a...d912', amount: '+85.00 USDC' },
     ];
 
     constructor() {
@@ -132,6 +145,38 @@ export class BountiFiAgent {
         return this.settlementHistory;
     }
 
+    getTreasury() {
+        return { ...this.treasury };
+    }
+
+    getSubAgents() {
+        return [...this.subAgents];
+    }
+
+    isAutoPilot() {
+        return this.autoPilot;
+    }
+
+    setAutoPilot(active: boolean) {
+        this.autoPilot = active;
+        this.addLog(active ? "AUTO-PILOT: Sovereign mode engaged. Neutral Pulse active." : "AUTO-PILOT: Manual override engaged.");
+    }
+
+    private async executeSovereignPayout(amount: number, reason: string) {
+        this.treasury.operatingCapital -= amount;
+        this.treasury.totalFeesPaid += amount;
+        const txId = 'tx_' + Math.floor(Math.random() * 9000 + 1000);
+        this.settlementHistory.unshift({
+            id: txId,
+            type: reason,
+            time: 'Just now',
+            status: 'settled',
+            hash: '0x' + Math.random().toString(16).slice(2, 10) + '...',
+            amount: `-${amount.toFixed(2)} USDC`
+        });
+        this.addLog(`SOVEREIGN_SETTLEMENT: Paid ${amount} USDC for ${reason}. [${txId}]`);
+    }
+
     getYieldProjections() {
         if (this.yieldHistory.length === 0) return "0.00";
         const avg = this.yieldHistory.reduce((a, b) => a + b, 0) / this.yieldHistory.length;
@@ -180,7 +225,13 @@ export class BountiFiAgent {
                     if (!existingIds.has(task.id) && this.tasks.length < 10) {
                         this.tasks.push(task);
                         this.addLog(`NEURAL_MATCH: [${task.id}] found in ${task.repository}`);
-                        this.solveTask(task);
+
+                        // Autonomous decision: Only solve if Auto-Pilot is ON or if it's a high-confidence match
+                        if (this.autoPilot || Math.random() > 0.8) {
+                            this.solveTask(task);
+                        } else {
+                            this.addLog(`ADVISORY: [${task.id}] queued. Waiting for manual trigger or AutoGlide activation.`);
+                        }
                     }
                 });
             }
@@ -230,31 +281,61 @@ export class BountiFiAgent {
     }
 
     private async solveTask(task: BountyTask) {
-        // Step 1: Strategic Planning Phase
+        // Step 1: Strategic Planning Phase (Swarm Consensus)
         task.status = 'simulating';
-        this.addLog(`[${task.id}] NEURAL_PLANNING: Assessing gas efficiency & L2 priority...`);
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        this.subAgents[0].status = 'active'; // Node-Alpha
+        this.subAgents[2].status = 'active'; // Node-Gamma
+        this.subAgents[0].task = `Auditing_${task.id}`;
+        this.subAgents[2].task = `Planning_${task.id}`;
+
+        this.addLog(`[${task.id}] NEURAL_PLANNING: Initializing Swarm Consensus...`);
+        await new Promise(resolve => setTimeout(resolve, 4000));
 
         const confidence = Math.floor(Math.random() * (100 - 80 + 1) + 80);
         task.confidence = confidence;
 
         if (confidence < 85) {
-            this.addLog(`[${task.id}] STRATEGY REJECTED: Confidence ${confidence}% below safety margin.`);
+            this.addLog(`[${task.id}] STRATEGY REJECTED: Swarm confidence ${confidence}% below safety margin.`);
             task.status = 'failed';
+            this.subAgents[0].status = 'idle';
+            this.subAgents[2].status = 'idle';
+            this.subAgents[0].task = 'Standby';
+            this.subAgents[2].task = 'Standby';
             return;
         }
 
-        this.addLog(`[${task.id}] STRATEGY VALIDATED: Executing autonomous patch synthesis...`);
+        // Autonomous Payout: Tip for priority
+        if (this.treasury.operatingCapital > 500) {
+            await this.executeSovereignPayout(5.00, 'Priority_Verification_Tip');
+        }
+
+        this.addLog(`[${task.id}] STRATEGY VALIDATED: Transitioning to Synthesis Phase...`);
+        this.subAgents[1].status = 'active'; // Node-Beta
+        this.subAgents[1].task = `Synthesis_${task.id}`;
+        this.subAgents[0].status = 'idle';
+        this.subAgents[0].task = 'Standby';
 
         // Step 2: Solving Phase
         task.status = 'solving';
         this.addLog(`[${task.id}] Decoding repository bytes...`);
         await new Promise(resolve => setTimeout(resolve, 3000));
-        this.addLog(`[${task.id}] AI-Brain generating fix...`);
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        this.addLog(`[${task.id}] AI-Brain generating neural patch...`);
+        await new Promise(resolve => setTimeout(resolve, 4000));
+
+        this.subAgents[3].status = 'active'; // Node-Delta
+        this.subAgents[3].task = `Dispatch_${task.id}`;
         this.addLog(`[${task.id}] Pushing signed commit to Pinion mesh...`);
+
         task.status = 'completed';
-        setTimeout(() => this.triggerPayment(task), 6000);
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        // Reset sub-agents
+        this.subAgents.forEach(a => {
+            a.status = 'idle';
+            a.task = 'Standby';
+        });
+
+        this.triggerPayment(task);
     }
 
     private async triggerPayment(task: BountyTask) {
@@ -297,7 +378,10 @@ export class BountiFiAgent {
             settlementHistory: this.settlementHistory,
             projections: this.getYieldProjections(),
             prices: this.prices,
-            telemetry: this.telemetry
+            telemetry: this.telemetry,
+            treasury: this.treasury,
+            subAgents: this.subAgents,
+            autoPilot: this.autoPilot
         };
     }
 

@@ -13,6 +13,7 @@ import {
   TrendingUp,
   History,
   ShieldCheck,
+  Shield,
   Globe,
   Database,
   Layers,
@@ -41,6 +42,7 @@ import {
 import { bountifi, BountyTask } from '@/lib/agent';
 import { isPinionConfigured } from '@/lib/pinion';
 import { SettingsModal } from '@/components/SettingsModal';
+import { VaultComponent } from '@/components/VaultComponent';
 
 // --- CUSTOM PREMIUM LOGO ---
 const NeuralLogo = () => (
@@ -133,7 +135,7 @@ const DocModal = ({ isOpen, type, onClose }: { isOpen: boolean, type: string | n
 };
 
 export default function BountiFiDashboard() {
-  const [activeTab, setActiveTab] = useState<'missions' | 'analytics' | 'leaderboard'>('missions');
+  const [activeTab, setActiveTab] = useState<'missions' | 'analytics' | 'leaderboard' | 'sovereign'>('missions');
   const [isRunning, setIsRunning] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [tasks, setTasks] = useState<BountyTask[]>([]);
@@ -149,6 +151,8 @@ export default function BountiFiDashboard() {
   const [mode, setMode] = useState<'dark' | 'light' | 'slate'>('dark');
   const [specialization, setSpecialization] = useState<'frontend' | 'solidity' | 'protocol'>('frontend');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [subAgents, setSubAgents] = useState<any[]>([]);
+  const [autoPilot, setAutoPilot] = useState(false);
 
   const handleLogoClick = () => {
     setActiveTab('missions');
@@ -166,6 +170,8 @@ export default function BountiFiDashboard() {
       setAnalytics(bountifi.getAnalytics());
       setLeaderboard(bountifi.getLeaderboard());
       setSpecialization(bountifi.getSpecialization());
+      setSubAgents(bountifi.getSubAgents());
+      setAutoPilot(bountifi.isAutoPilot());
     }, 1000);
 
     return () => clearInterval(interval);
@@ -236,7 +242,8 @@ export default function BountiFiDashboard() {
           {[
             { id: 'missions', label: 'Mission Control', icon: Zap },
             { id: 'analytics', label: 'Earning Analytics', icon: TrendingUp },
-            { id: 'leaderboard', label: 'Global Rank', icon: Globe }
+            { id: 'leaderboard', label: 'Global Rank', icon: Globe },
+            { id: 'sovereign', label: 'Sovereign Treasury', icon: Shield }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -325,7 +332,8 @@ export default function BountiFiDashboard() {
                 {[
                   { id: 'missions', label: 'Mission Control', icon: Zap },
                   { id: 'analytics', label: 'Earning Analytics', icon: TrendingUp },
-                  { id: 'leaderboard', label: 'Global Rank', icon: Globe }
+                  { id: 'leaderboard', label: 'Global Rank', icon: Globe },
+                  { id: 'sovereign', label: 'Sovereign Treasury', icon: Shield }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -516,11 +524,35 @@ export default function BountiFiDashboard() {
                         <motion.div
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="h-full flex flex-col items-center justify-center text-center py-40"
+                          className="h-full flex flex-col items-center justify-center text-center py-20 relative overflow-hidden"
                         >
-                          <Globe size={64} className="text-zinc-800 mb-8 animate-spin-slow opacity-20" />
-                          <p className="text-zinc-600 font-black text-[10px] uppercase tracking-[0.4em] max-w-xs leading-loose">
-                            Awaiting Decentralized Labor Protocol Signal Handshake...
+                          <div className="relative mb-12">
+                            <motion.div
+                              animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.3, 0.1] }}
+                              transition={{ duration: 4, repeat: Infinity }}
+                              className="absolute inset-0 bg-[var(--primary)]/30 blur-3xl rounded-full"
+                            />
+                            <div className="flex gap-8 relative z-10">
+                              {subAgents.map((agent, i) => (
+                                <motion.div
+                                  key={agent.id}
+                                  animate={{ y: [0, -10, 0] }}
+                                  transition={{ duration: 3, delay: i * 0.5, repeat: Infinity }}
+                                  className="flex flex-col items-center gap-4"
+                                >
+                                  <div className={`p-4 rounded-2xl border ${agent.status === 'active' ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400' : 'bg-white/5 border-white/10 text-zinc-600'}`}>
+                                    <Cpu size={32} />
+                                  </div>
+                                  <span className="text-[8px] font-black uppercase tracking-widest">{agent.id}</span>
+                                </motion.div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <h3 className="text-3xl font-black italic tracking-tighter text-white uppercase mb-4">Sovereign_Swarm_Standby</h3>
+                          <p className="text-zinc-600 font-black text-[10px] uppercase tracking-[0.4em] max-w-sm leading-loose">
+                            Multi-Node Consensus Handshake in Progress... <br />
+                            <span className="text-[var(--primary)]">x402 Protocol: SECURE</span>
                           </p>
                         </motion.div>
                       ) : (
@@ -664,6 +696,26 @@ export default function BountiFiDashboard() {
                           {depth}
                         </button>
                       ))}
+                    </div>
+
+                    <div className="mt-6 pt-6 border-t border-white/5">
+                      <div className="flex items-center justify-between mb-4">
+                        <p className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">Autonomous_AutoGlide</p>
+                        <div className={`w-8 h-4 rounded-full p-1 transition-colors cursor-pointer ${autoPilot ? 'bg-emerald-500' : 'bg-zinc-800'}`}
+                          onClick={() => {
+                            bountifi.setAutoPilot(!autoPilot);
+                            setAutoPilot(!autoPilot);
+                          }}
+                        >
+                          <motion.div
+                            animate={{ x: autoPilot ? 16 : 0 }}
+                            className="w-2 h-2 rounded-full bg-white"
+                          />
+                        </div>
+                      </div>
+                      <p className="text-[8px] text-zinc-500 font-bold leading-relaxed opacity-60">
+                        24/7 Neural Scheduler manages mission selection & settlement without human presence.
+                      </p>
                     </div>
                   </div>
                 </section>
@@ -909,6 +961,60 @@ export default function BountiFiDashboard() {
               <p className="text-center mt-10 text-zinc-700 text-[10px] font-black uppercase tracking-[0.2em]">
                 Leaderboard syncs every 24 hours across the Pinion Decentralized Grid
               </p>
+            </motion.div>
+          )}
+
+          {activeTab === 'sovereign' && (
+            <motion.div
+              key="sovereign"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="max-w-6xl mx-auto py-10 space-y-12"
+            >
+              <div className="flex flex-col xl:flex-row gap-12 items-start">
+                <div className="w-full xl:w-2/3">
+                  <VaultComponent treasury={analytics?.treasury || { gasVault: 0.45, operatingCapital: 1250.00, pinionCredits: 2500, totalFeesPaid: 0 }} />
+                </div>
+                <div className="w-full xl:w-1/3 glass-card p-8 bg-[var(--panel-bg)] border-[var(--glass-border)]">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                      <History size={18} className="text-zinc-500" />
+                      <h3 className="text-xs font-black uppercase tracking-widest text-zinc-100">Sovereign_Ledger</h3>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    {analytics?.settlementHistory?.slice(0, 5).map((tx: any) => (
+                      <div key={tx.id} className="p-5 rounded-xl bg-white/5 border border-white/5 flex items-center justify-between hover:bg-white/10 transition-colors group">
+                        <div className="flex items-center gap-4">
+                          <div className={`p-2 rounded-lg ${tx.amount?.startsWith('-') ? 'bg-blue-500/10' : 'bg-emerald-500/10'}`}>
+                            <TrendingUp size={16} className={tx.amount?.startsWith('-') ? 'text-blue-500' : 'text-emerald-500'} />
+                          </div>
+                          <div>
+                            <p className="text-xs font-black text-white uppercase tracking-widest">{tx.type}</p>
+                            <span className="text-[9px] text-zinc-500 font-bold uppercase">{tx.time} • {tx.id}</span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className={`text-sm font-black italic ${tx.amount?.startsWith('-') ? 'text-zinc-400' : 'text-emerald-400'}`}>{tx.amount}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="glass-card p-12 bg-blue-600/5 border-blue-500/10 relative overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+                <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
+                  <div className="max-w-xl">
+                    <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white mb-4">Neural_AutoGlide_Active</h3>
+                    <p className="text-sm text-zinc-400 font-medium leading-[1.8] uppercase tracking-widest">
+                      The BountiFi Sovereign agents utilize the AutoGlide scheduler for 24/7 mission resolution. The protocol automatically monitors network health and adjusts solver priority across the Pinion decentralized kernel without human intervention.
+                    </p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
